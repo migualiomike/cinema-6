@@ -1,6 +1,7 @@
 extends Node
 class_name LevelManager
 
+@onready var player: CharacterBody3D = $"../CharacterBody3D"
 @onready var anomalies: Node = $Anomalies
 @onready var progress_number: Label3D = $ProgressNumber
 
@@ -39,6 +40,7 @@ func on_loop(is_forward: bool) -> void:
 	
 	if debug:
 		print("Is Anomaly: ", is_anomaly)
+		if anomaly_active: print("current anomaly: ", anomaly_active.name)
 
 
 func on_progress(is_forward: bool) -> void:
@@ -59,6 +61,7 @@ func on_progress(is_forward: bool) -> void:
 	if debug: print("going_forward: ", is_forward)
 	if debug: print("current_progress: ", cur_progress)
 	if debug: print("current anomaly chance: ", 50 + (cur_progress * 2))
+	
 
 
 func deactivate_current_anomaly() -> void:
