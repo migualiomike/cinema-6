@@ -1,5 +1,5 @@
 extends CharacterBody3D
-@onready var camera_3d: Camera3D = $Camera3D
+@onready var camera_3d: Camera3D = $Head/Camera3D
 
 
 const SPEED = 15.0#5.0
