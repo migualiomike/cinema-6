@@ -197,7 +197,6 @@ shape = SubResource("BoxShape3D_5oamj")
 
 [node name="Area3D" type="Area3D" parent="DevLevel" node_paths=PackedStringArray("exit_corridor", "entrance_corridor")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6141698, 0.8306036, -4.252351)
-visible = false
 script = ExtResource("5_e2cg0")
 exit_corridor = NodePath("../EntranceCExit")
 entrance_corridor = NodePath("../EntranceC")
