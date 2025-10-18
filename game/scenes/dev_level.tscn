@@ -162,6 +162,10 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DevLevel/EntranceC"]
 shape = SubResource("ConcavePolygonShape3D_xhic4")
 
+[node name="OmniLight3D" type="OmniLight3D" parent="DevLevel/EntranceC"]
+light_energy = 1.5
+omni_range = 6.7179837
+
 [node name="EntranceCExit" type="StaticBody3D" parent="DevLevel"]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4, 2, -4)
 
@@ -174,6 +178,10 @@ skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DevLevel/ExitC"]
 shape = SubResource("ConcavePolygonShape3D_c33pq")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="DevLevel/ExitC"]
+light_energy = 1.5
+omni_range = 6.7179837
 
 [node name="Area3D2" type="Area3D" parent="DevLevel" node_paths=PackedStringArray("exit_corridor", "entrance_corridor")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34.96242, 0.7893677, -47.442245)
