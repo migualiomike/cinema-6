@@ -23,7 +23,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 script = ExtResource("2_g1dw6")
 
 [node name="Camera3D" type="Camera3D" parent="Head"]
-
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
-light_energy = 2.0
-omni_range = 10.197921
+current = true

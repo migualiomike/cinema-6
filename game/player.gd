@@ -1,8 +1,9 @@
 extends CharacterBody3D
 @onready var camera_3d: Camera3D = $Head/Camera3D
+@onready var head: Node3D = $Head
 
 
-const SPEED = 15.0#5.0
+const SPEED = 5.0 #5.0
 const JUMP_VELOCITY = 0.0#4.5
 
 

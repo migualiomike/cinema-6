@@ -26,11 +26,14 @@ func _on_body_entered(body: Node3D) -> void:
 			var local_pos = exit_corridor.to_local(body.global_position)
 			var new_pos = entrance_corridor.to_global(local_pos)
 			body.global_position = new_pos
+			body.reset_physics_interpolation() # Stops jitter when teleporting
 			print("area_forward")
 		else:
 			var local_pos = entrance_corridor.to_local(body.global_position)
 			var new_pos = exit_corridor.to_global(local_pos)
 			body.global_position = new_pos
 			body.rotation.y += deg_to_rad(180)
+			body.reset_physics_interpolation() # Stops jitter when teleporting
 			print("area_back")
+	
 		pass
