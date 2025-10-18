@@ -32,7 +32,7 @@ func on_loop(is_forward: bool) -> void:
 	on_progress(is_forward)
 	deactivate_current_anomaly()
 	
-	if randi() % 100 < 50:  # 50% chance
+	if randi() % 100 < (50 + (cur_progress * 2)):  # 50% chance and increases with each success
 		is_anomaly = true
 	else:
 		is_anomaly = false
@@ -58,6 +58,7 @@ func on_progress(is_forward: bool) -> void:
 	
 	if debug: print("going_forward: ", is_forward)
 	if debug: print("current_progress: ", cur_progress)
+	if debug: print("current anomaly chance: ", 50 + (cur_progress * 2))
 
 
 func deactivate_current_anomaly() -> void:
