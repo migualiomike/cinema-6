@@ -24,20 +24,13 @@ func reset():
 	for child in get_node("Posters").get_children():
 		child.texture_albedo = child.og_poster
 
-func incorrect():
-	progress = 0
-	reset()
-
-func correct():
-	progress += 1
-	reset()
-
 func on_forward():
 	if isAnomaly:
-		incorrect()
+		progress = 0
 	else:
-		correct()
-		
+		progress += 1
+	
+	reset()
 	# Determine if anomaly
 	var chanceOfAnomaly := randi() % 101
 	if percentChanceOfAnomaly >= chanceOfAnomaly:
@@ -46,16 +39,15 @@ func on_forward():
 		var posters := get_node("Posters").get_children()
 		var poster := posters[randi() % posters.size()]
 		poster.texture_albedo = poster.ano_poster
-	else:
-		isAnomaly = false
 		
 	
 func on_backward():
 	if !isAnomaly:
-		incorrect()
+		progress = 0
 	elif isAnomaly:
-		correct()
-		
+		progress += 1
+	
+	reset()
 	progress -=1
 
 func on_teleport(isForward: Variant):
