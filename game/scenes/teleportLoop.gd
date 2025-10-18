@@ -31,5 +31,6 @@ func _on_body_entered(body: Node3D) -> void:
 			var local_pos = entrance_corridor.to_local(body.global_position)
 			var new_pos = exit_corridor.to_global(local_pos)
 			body.global_position = new_pos
+			body.rotation.y += deg_to_rad(180)
 			print("area_back")
 		pass
