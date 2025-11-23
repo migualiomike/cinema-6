@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7tldfhk3vkn7"]
+
+[ext_resource type="PackedScene" uid="uid://c46jowr7luwsm" path="res://scenes/levels/CinemaLevel1.blend" id="1_f6ckv"]
+[ext_resource type="Material" uid="uid://bg34i233ryb7y" path="res://assets/shaders/DarkProtoGrid.tres" id="2_8cwjn"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_f2og7"]
+data = PackedVector3Array(1.9999, 1.25, -7.75, -2, 1.25, -5.25, 1.9999, 1.25, -5.25, 1.9999, 1.25, -7.75, -2, 1.25, -7.75, -2, 1.25, -5.25, -2, 1.25, -5.25, 1.9999, 1.25, 5.2497997, 1.9999, 1.25, -5.25, -2, 1.25, -5.25, -2, 1.25, 5.2497997, 1.9999, 1.25, 5.2497997, -2, 1.25, 5.2497997, 2, 1.25, 7.75, 1.9999, 1.25, 5.2497997, -2, 1.25, 5.2497997, -2, 1.25, 7.75, 2, 1.25, 7.75, 1.9999, -1.25, -5.25, -2, -1.25, 5.2497997, -2, -1.25, -5.25, 1.9999, -1.25, -5.25, -2, -1.25, -5.25, -2, -1.25, -7.75, 1.9999, -1.25, -5.25, -2, -1.25, -7.75, 1.9999, -1.25, -7.75, 1.9999, -1.25, -5.25, 1.9999, -1.25, 5.2497997, -2, -1.25, 5.2497997, 1.9999, -1.25, 5.2497997, -2, -1.25, 7.75, -2, -1.25, 5.2497997, 1.9999, -1.25, 5.2497997, 2, -1.25, 7.75, -2, -1.25, 7.75, -2, -1.25, -5.25, -2, 1.25, -7.75, -2, -1.25, -7.75, -2, -1.25, -5.25, -2, 1.25, -5.25, -2, 1.25, -7.75, -2, -1.25, -5.25, -2, 1.25, 5.25, -2, 1.25, -5.25, -2, -1.25, -5.25, -2, -1.25, 5.25, -2, 1.25, 5.25, -2, -1.25, 5.25, -2, 1.25, 7.75, -2, 1.25, 5.25, -2, -1.25, 5.25, -2, -1.25, 7.75, -2, 1.25, 7.75, 2, 1.25, -5.25, 2, -1.25, 5.25, 2, -1.25, -5.25, 2, 1.25, -5.25, 2, 1.25, 5.25, 2, -1.25, 5.25, 2, 1.25, 7.75, -2, -1.25, 7.75, 2, -1.25, 7.75, 2, 1.25, 7.75, -2, 1.25, 7.75, -2, -1.25, 7.75, 2, 1.25, -7.75, -2, -1.25, -7.75, -2, 1.25, -7.75, 2, 1.25, -7.75, 2, -1.25, -7.75, -2, -1.25, -7.75)
+
+[node name="CinemaLevel1" instance=ExtResource("1_f6ckv")]
+
+[node name="Room_011" parent="." index="2"]
+surface_material_override/0 = ExtResource("2_8cwjn")
+surface_material_override/1 = ExtResource("2_8cwjn")
+surface_material_override/2 = ExtResource("2_8cwjn")
+surface_material_override/3 = ExtResource("2_8cwjn")
+surface_material_override/4 = ExtResource("2_8cwjn")
+
+[node name="Exit_001" parent="." index="20"]
+surface_material_override/0 = ExtResource("2_8cwjn")
+surface_material_override/1 = ExtResource("2_8cwjn")
+surface_material_override/2 = ExtResource("2_8cwjn")
+
+[node name="ExitHall_001" parent="." index="21"]
+surface_material_override/0 = ExtResource("2_8cwjn")
+surface_material_override/1 = ExtResource("2_8cwjn")
+surface_material_override/2 = ExtResource("2_8cwjn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitHall_001" index="0"]
+shape = SubResource("ConcavePolygonShape3D_f2og7")
+
+[node name="Exit_002" parent="." index="27"]
+surface_material_override/0 = ExtResource("2_8cwjn")
+surface_material_override/1 = ExtResource("2_8cwjn")
+surface_material_override/2 = ExtResource("2_8cwjn")
+
+[node name="ExitHall_002" parent="." index="28"]
+surface_material_override/0 = ExtResource("2_8cwjn")
+surface_material_override/1 = ExtResource("2_8cwjn")
+surface_material_override/2 = ExtResource("2_8cwjn")
