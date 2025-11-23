@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c46jowr7luwsm"
-path="res://.godot/imported/CinemaLevel1.blend-3b42fdb9dd9569d5d9c57d0293e7da35.scn"
+uid="uid://bsfrm51rupytk"
+path="res://.godot/imported/CinemaLevel1.blend-35b3cd2d90459f29143f18954a2c120f.scn"
 
 [deps]
 
-source_file="res://scenes/levels/CinemaLevel1.blend"
-dest_files=["res://.godot/imported/CinemaLevel1.blend-3b42fdb9dd9569d5d9c57d0293e7da35.scn"]
+source_file="res://scenes/levels/cinema_level/CinemaLevel1.blend"
+dest_files=["res://.godot/imported/CinemaLevel1.blend-35b3cd2d90459f29143f18954a2c120f.scn"]
 
 [params]
 

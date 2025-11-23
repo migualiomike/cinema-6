@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://daa5aop6t167o"
-path="res://.godot/imported/dirty_carpet_disp_256.png-515dc7153972e083874371819a94f108.ctex"
+path="res://.godot/imported/dirty_carpet_disp_256.png-c3176ed5568af29c66240d5251dedd31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scenes/levels/textures/dirty_carpet_disp_256.png"
-dest_files=["res://.godot/imported/dirty_carpet_disp_256.png-515dc7153972e083874371819a94f108.ctex"]
+source_file="res://scenes/levels/cinema_level/textures/dirty_carpet_disp_256.png"
+dest_files=["res://.godot/imported/dirty_carpet_disp_256.png-c3176ed5568af29c66240d5251dedd31.ctex"]
 
 [params]
 
