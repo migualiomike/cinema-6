@@ -18,7 +18,13 @@ config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdscript_formatter/GDQuest_GDScript_formatter/plugin.cfg")
+enabled=PackedStringArray("res://addons/blender_godot_pipeline/plugin.cfg", "res://addons/gdscript_formatter/GDQuest_GDScript_formatter/plugin.cfg")
+
+[importer_defaults]
+
+animation_library={
+&"import_script/path": "uid://1hsn6wsbfy4l"
+}
 
 [input]
 
