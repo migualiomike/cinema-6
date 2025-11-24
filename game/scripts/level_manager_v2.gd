@@ -11,7 +11,6 @@ var anomaly_array: Array[Node] = []
 var anomaly_chances: Array[float] = []
 var cur_progress := 0:
 	set(value):
-		progress_number.text = str(value)
 		if value > 6: cur_progress = 6
 		cur_progress = value
 		progress_changed.emit()
@@ -24,7 +23,6 @@ signal player_hall_changed(is_true:bool)
 @onready var hall_detector: Area3D = $HallDetector
 @onready var player: CharacterBody3D = $"../CharacterBody3D"
 @onready var anomalies: Node = $Anomalies
-@onready var progress_number: Label3D = $ProgressNumber
 
 
 func _ready() -> void:
