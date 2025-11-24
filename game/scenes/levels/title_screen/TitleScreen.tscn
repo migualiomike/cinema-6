@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=4 uid="uid://chweqygnpbot5"]
+[gd_scene load_steps=42 format=4 uid="uid://chweqygnpbot5"]
 
 [ext_resource type="Texture2D" uid="uid://uy7j5vk5nnmn" path="res://scenes/levels/cinema_level/UE4_1m x 1m.png" id="1_jewl0"]
 [ext_resource type="Texture2D" uid="uid://dc0y0lml2f3h6" path="res://scenes/levels/cinema_level/dirty_carpet_diff_256.png" id="2_m2vd1"]
@@ -6,22 +6,14 @@
 [ext_resource type="Material" uid="uid://cbeunclgwn4ja" path="res://scenes/levels/cinema_level/textures/RedCarpet.tres" id="4_3d1mj"]
 [ext_resource type="Material" uid="uid://cgv2uwg8ngxpm" path="res://scenes/levels/cinema_level/textures/Carpet2.tres" id="5_jewl0"]
 [ext_resource type="PackedScene" uid="uid://dsq8rs0nqmsca" path="res://scenes/props/CinemaDoorL.tscn" id="6_uoh34"]
-[ext_resource type="Script" uid="uid://dn6rkwifgflpm" path="res://scripts/cinema_door.gd" id="7_a6abc"]
 [ext_resource type="PackedScene" uid="uid://s5dgbik2xhdn" path="res://scenes/props/CinemaDoorR.tscn" id="8_w4yeg"]
 [ext_resource type="PackedScene" uid="uid://mlxe6qc5nmfr" path="res://scenes/props/Poster.tscn" id="9_30xqp"]
 [ext_resource type="PackedScene" uid="uid://dnjt3b76djbcq" path="res://scenes/props/wall_light.tscn" id="10_rjlt0"]
 [ext_resource type="VoxelGIData" uid="uid://dwvq2nwin68fh" path="res://scenes/levels/title_screen/TitleScreen.VoxelGI_data.res" id="11_f1nci"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jewl0"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_m2vd1"]
-sky_material = SubResource("ProceduralSkyMaterial_jewl0")
+[ext_resource type="AudioStream" uid="uid://x32sxicyledi" path="res://assets/audio/Woosh.wav" id="11_jewl0"]
 
 [sub_resource type="Environment" id="Environment_58i3g"]
 background_mode = 2
-sky = SubResource("Sky_m2vd1")
 tonemap_mode = 2
 ssao_enabled = true
 glow_enabled = true
@@ -664,6 +656,7 @@ script/source = "extends Control
 @onready var right_door: StaticBody3D = $\"../PackedScene_CinemaDoorR_007\"
 @onready var fade_rect: ColorRect = $FadeRect
 @onready var camera: Camera3D = $\"../Camera3D\"
+@onready var audio_stream_player: AudioStreamPlayer = $\"../AudioStreamPlayer\"
 
 var tween:Tween
 
@@ -695,6 +688,8 @@ func on_button_up() -> void:
 	tween.tween_property(left_door, \"rotation:y\", deg_to_rad(170.0), 0.8).set_delay(1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CIRC)
 	tween.tween_property(right_door, \"rotation:y\", deg_to_rad(10.0), 0.8).set_delay(1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CIRC)
 	tween.tween_property(camera, \"position:x\", -0.5, 0.8).set_delay(2.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CIRC)
+	tween.tween_callback(audio_stream_player.play).set_delay(0.3)
+	
 	await tween.finished
 	get_tree().change_scene_to_file(\"uid://omurinejaiqf\")
 	
@@ -760,64 +755,64 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3234062, -0.9249251, 4.7326
 mesh = SubResource("ArrayMesh_l0stk")
 skeleton = NodePath("")
 
-[node name="PackedScene_PosterFrame" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5687313, -0.27705693, -2.4999998)
 
-[node name="PackedScene_PosterFrame_001" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_001" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.483139, -0.27705693, -2.4999998)
 
-[node name="PackedScene_PosterFrame_002" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_002" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5350113, -0.27705693, -2.4999998)
 
-[node name="PackedScene_PosterFrame_003" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_003" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 12.535263, -0.27705693, 2.5002499)
 
-[node name="PackedScene_PosterFrame_004" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_004" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 9.483391, -0.27705693, 2.5002499)
 
-[node name="PackedScene_PosterFrame_005" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_005" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 6.4315186, -0.27705693, 2.5002503)
 
-[node name="PackedScene_PosterFrame_006" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_006" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.43177, -0.27705693, -2.4999998)
 
-[node name="PackedScene_PosterFrame_007" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_007" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.483639, -0.27705693, -2.4999998)
 
-[node name="PackedScene_PosterFrame_008" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_008" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.535511, -0.27705693, -2.4999998)
 
-[node name="PackedScene_PosterFrame_009" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_009" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, -1.4652405, -0.27705693, 2.5002499)
 
-[node name="PackedScene_PosterFrame_010" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_010" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, -4.5171127, -0.27705693, 2.5002499)
 
-[node name="PackedScene_PosterFrame_011" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
+[node name="PackedScene_PosterFrame_011" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("9_30xqp")]
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, -7.568985, -0.27705693, 2.5002503)
 
-[node name="PackedScene_WallLight_003" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_003" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(-3.5762787e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -3.5762787e-07, -21, 0.84715676, 0)
 
-[node name="PackedScene_WallLight_006" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_006" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.51766, 0.877558, -6.0002503)
 
-[node name="PackedScene_WallLight_007" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_007" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(2.6226044e-06, 0, -1, 0, 1, 0, 1, 0, 2.6226044e-06, 21, 0.877558, 0)
 
-[node name="PackedScene_WallLight_008" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_008" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(-1, 0, -9.775241e-07, 0, 1, 0, 9.775241e-07, 0, -1, -13.51766, 0.877558, 6.00025)
 
-[node name="PackedScene_WallLight_009" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_009" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.499737, 0.877558, -2.5002508)
 
-[node name="PackedScene_WallLight_010" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_010" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.536335, 0.877558, -2.5002508)
 
-[node name="PackedScene_WallLight_011" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_011" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(-1, 0, -2.582881e-06, 0, 1, 0, 2.582881e-06, 0, -1, 2.4854774, 0.877558, 2.5002508)
 
-[node name="PackedScene_WallLight_012" type="StaticBody3D" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
+[node name="PackedScene_WallLight_012" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("10_rjlt0")]
 transform = Transform3D(-1, 0, -2.582881e-06, 0, 1, 0, 2.582881e-06, 0, -1, 16.496994, 0.877558, 2.5002508)
 
 [node name="EntranceHall" type="MeshInstance3D" parent="CinemaLevel1_Imported"]
@@ -835,13 +830,11 @@ metadata/material_0 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders
 metadata/material_1 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/RedCarpet.tres"
 metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 
-[node name="PackedScene_CinemaDoorL_005" type="StaticBody3D" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("8_w4yeg")]
+[node name="PackedScene_CinemaDoorL_005" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("8_w4yeg")]
 transform = Transform3D(-0.9848076, 0, -0.17364845, 0, 1, 0, 0.17364845, 0, -0.9848076, -6.753587, 0.15012491, 7.7500873)
-script = ExtResource("7_a6abc")
 
-[node name="PackedScene_CinemaDoorR_005" type="StaticBody3D" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("6_uoh34")]
+[node name="PackedScene_CinemaDoorR_005" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("6_uoh34")]
 transform = Transform3D(0.9848077, 0, -0.17364827, 0, 1, 0, 0.17364827, 0, 0.9848077, -6.753578, 0.15012491, 5.249828)
-script = ExtResource("7_a6abc")
 
 [node name="StaticBody3D_Exit_001" type="StaticBody3D" parent="CinemaLevel1_Imported/EntranceHall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4999943, 0, -6.5000014)
@@ -945,10 +938,13 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="PackedScene_CinemaDoorL_007" type="StaticBody3D" parent="." instance=ExtResource("6_uoh34")]
+[node name="PackedScene_CinemaDoorL_007" parent="." instance=ExtResource("6_uoh34")]
 transform = Transform3D(-4.3711392e-08, 0, 1.0000001, 0, 1, 0, -1.0000001, 0, -4.3711392e-08, 3.753591, 1.4001249, 1.2499819)
-script = ExtResource("7_a6abc")
 
-[node name="PackedScene_CinemaDoorR_007" type="StaticBody3D" parent="." instance=ExtResource("8_w4yeg")]
+[node name="PackedScene_CinemaDoorR_007" parent="." instance=ExtResource("8_w4yeg")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.7535872, 1.4001249, -1.2502689)
-script = ExtResource("7_a6abc")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_jewl0")
+volume_db = -20.0
+pitch_scale = 0.2

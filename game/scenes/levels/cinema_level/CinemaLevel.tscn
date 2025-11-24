@@ -1351,7 +1351,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.72
 [node name="Telepoints" type="Node3D" parent="."]
 
 [node name="Backwards" type="Area3D" parent="Telepoints" node_paths=PackedStringArray("exit_corridor", "entrance_corridor")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5207506, 0.7893677, 7.249858)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5207506, 0.7893677, 7.5876894)
 script = ExtResource("22_r11fm")
 exit_corridor = NodePath("../StaticBody3D_EntranceHallCol")
 entrance_corridor = NodePath("../StaticBody3D_EntranceHallCol")
@@ -1360,7 +1360,7 @@ entrance_corridor = NodePath("../StaticBody3D_EntranceHallCol")
 shape = SubResource("BoxShape3D_bjhaf")
 
 [node name="Forwards" type="Area3D" parent="Telepoints" node_paths=PackedStringArray("exit_corridor", "entrance_corridor")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 50.364067, 0.8306036, 4.381051)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 50.364067, 0.8306036, 8.62354)
 script = ExtResource("22_r11fm")
 area_forward = true
 exit_corridor = NodePath("../StaticBody3D_ExitHallCol")

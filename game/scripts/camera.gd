@@ -2,6 +2,7 @@ extends Node3D
 @onready var player: CharacterBody3D = $".."
 @onready var camera_3d: Camera3D = $Camera3D
 @onready var ticket_hand: MeshInstance3D = $TicketHand
+@onready var foot_step_player: AudioStreamPlayer3D = $"../FootStepPlayer"
 
 var mouse_sensitivity := 0.0015
 var bob_dt := 0.0
@@ -14,9 +15,11 @@ var can_step := false
 
 var is_headbobbing := false: set = _set_is_headbobbing
 
+signal stepped
 
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	stepped.connect(play_footstep)
 
 func _physics_process(delta: float) -> void:
 	_headbob_logic(delta)
@@ -30,7 +33,8 @@ func _input(event: InputEvent) -> void:
 
 		player.rotation.y -= event.relative.x * mouse_sensitivity
 
-
+func play_footstep() -> void:
+	foot_step_player.play()
 
 func _headbob_logic(delta: float) -> void:
 	if not head_bobbing_enabled:
@@ -65,10 +69,11 @@ func _reset_headbob(delta: float) -> void:
 
 func _check_for_footstep(pos_y: float) -> void:
 	if pos_y < 0 and can_step:
-		# emit_signal("stepped")
+		emit_signal("stepped")
 		can_step = false
 	elif pos_y > 0 and not can_step:
 		can_step = true
+		
 
 func _handle_zoom(delta: float) -> void:
 	var target_fov := 45.0 if Input.is_action_pressed("zoom") else 75.0

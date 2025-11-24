@@ -1,10 +1,18 @@
-[gd_scene load_steps=13 format=3 uid="uid://ktmjjjfy4mkd"]
+[gd_scene load_steps=22 format=3 uid="uid://ktmjjjfy4mkd"]
 
 [ext_resource type="Script" uid="uid://bvdil44vs8333" path="res://player.gd" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://coebo2g7hbk7m" path="res://scripts/camera.gd" id="2_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://b7ufnojplwop8" path="res://assets/textures/Tickethand.png" id="3_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://dm53mjh016lcm" path="res://assets/textures/mouse_right_outline.png" id="4_yw30f"]
 [ext_resource type="Texture2D" uid="uid://dx88bhnf6sphi" path="res://assets/textures/mouse_left_outline.png" id="5_qjkh3"]
+[ext_resource type="AudioStream" uid="uid://b5qovki3qbew3" path="res://assets/audio/Footsteps/fs_carpet_1.mp3" id="6_yllr7"]
+[ext_resource type="AudioStream" uid="uid://cvqbred6uaudi" path="res://assets/audio/Footsteps/fs_carpet_2.mp3" id="7_kb6p2"]
+[ext_resource type="AudioStream" uid="uid://e8lp08x6y133" path="res://assets/audio/Footsteps/fs_carpet_3.mp3" id="8_wodsf"]
+[ext_resource type="AudioStream" uid="uid://brd5edlhln52f" path="res://assets/audio/Footsteps/fs_carpet_4.mp3" id="9_32hag"]
+[ext_resource type="AudioStream" uid="uid://xn73bbdutgd2" path="res://assets/audio/Footsteps/fs_carpet_5.mp3" id="10_tqiix"]
+[ext_resource type="AudioStream" uid="uid://1op66sxrr0uh" path="res://assets/audio/Footsteps/fs_carpet_6.mp3" id="11_e7oew"]
+[ext_resource type="AudioStream" uid="uid://bpn0by6fwbs0e" path="res://assets/audio/Footsteps/fs_carpet_7.mp3" id="12_c35mf"]
+[ext_resource type="AudioStream" uid="uid://cs0rv8fmpbbq8" path="res://assets/audio/Footsteps/fs_carpet_8.mp3" id="13_65viv"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_i675q"]
 
@@ -177,6 +185,17 @@ func _ready() -> void:
 	tween.tween_property(self, \"modulate:a\", 0.0, 1.0).set_delay(1.0)
 "
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_x7c3f"]
+streams_count = 8
+stream_0/stream = ExtResource("6_yllr7")
+stream_1/stream = ExtResource("7_kb6p2")
+stream_2/stream = ExtResource("8_wodsf")
+stream_3/stream = ExtResource("9_32hag")
+stream_4/stream = ExtResource("10_tqiix")
+stream_5/stream = ExtResource("11_e7oew")
+stream_6/stream = ExtResource("12_c35mf")
+stream_7/stream = ExtResource("13_65viv")
+
 [node name="CharacterBody3D" type="CharacterBody3D" groups=["Player"]]
 script = ExtResource("1_rkbax")
 
@@ -289,3 +308,5 @@ color = Color(0, 0, 0, 1)
 script = SubResource("GDScript_rkbax")
 
 [node name="FootStepPlayer" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_x7c3f")
+volume_db = -30.0
