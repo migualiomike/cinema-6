@@ -1,4 +1,4 @@
-[gd_scene load_steps=82 format=4 uid="uid://omurinejaiqf"]
+[gd_scene load_steps=91 format=4 uid="uid://omurinejaiqf"]
 
 [ext_resource type="Script" uid="uid://b048eivsaf14b" path="res://scripts/level_manager_v2.gd" id="1_b5dv5"]
 [ext_resource type="Material" uid="uid://bg34i233ryb7y" path="res://assets/shaders/DarkProtoGrid.tres" id="1_lguoa"]
@@ -21,15 +21,14 @@
 [ext_resource type="PackedScene" uid="uid://dnjt3b76djbcq" path="res://scenes/props/wall_light.tscn" id="21_bjhaf"]
 [ext_resource type="Script" uid="uid://bfvw152p2fs5a" path="res://scenes/teleportLoop.gd" id="22_r11fm"]
 [ext_resource type="Material" uid="uid://cbeunclgwn4ja" path="res://scenes/levels/cinema_level/textures/RedCarpet.tres" id="23_imu3w"]
-[ext_resource type="PackedScene" uid="uid://1snym3w4xw4j" path="res://scenes/levels/cinema_level/CinemaLevel1.gltf" id="23_tc74v"]
 [ext_resource type="Texture2D" uid="uid://uy7j5vk5nnmn" path="res://scenes/levels/cinema_level/UE4_1m x 1m.png" id="24_3dlwb"]
-[ext_resource type="Material" uid="uid://bkeywg8ucfl5" path="res://scenes/levels/cinema_level/textures/Carpet.tres" id="24_tutmf"]
 [ext_resource type="Material" uid="uid://cgv2uwg8ngxpm" path="res://scenes/levels/cinema_level/textures/Carpet2.tres" id="25_5nwvk"]
 [ext_resource type="Texture2D" uid="uid://dc0y0lml2f3h6" path="res://scenes/levels/cinema_level/dirty_carpet_diff_256.png" id="25_imu3w"]
 [ext_resource type="PackedScene" uid="uid://mlxe6qc5nmfr" path="res://scenes/props/Poster.tscn" id="26_3dlwb"]
 [ext_resource type="PackedScene" uid="uid://dsq8rs0nqmsca" path="res://scenes/props/CinemaDoorL.tscn" id="26_imu3w"]
 [ext_resource type="PackedScene" uid="uid://s5dgbik2xhdn" path="res://scenes/props/CinemaDoorR.tscn" id="27_tutmf"]
 [ext_resource type="PackedScene" uid="uid://22dlccnrvc7g" path="res://scenes/actors/test_roach/Roach.tscn" id="29_jx5ev"]
+[ext_resource type="PackedScene" uid="uid://5l12rtoccua3" path="res://scenes/props/glowing_numbers/GlowingNumbers.tscn" id="31_kqiko"]
 
 [sub_resource type="GDScript" id="GDScript_kqiko"]
 resource_name = "cutout_clown"
@@ -192,6 +191,28 @@ top_radius = 0.2
 bottom_radius = 0.2
 height = 0.2
 
+[sub_resource type="GDScript" id="GDScript_n2aqs"]
+resource_name = "NumberManager"
+script/source = "extends Node3D
+@onready var level_manager: LevelManager = $\"../Level Manager\"
+
+@onready var glow_num_1: Node3D = $GlowNum1
+@onready var glow_num_2: Node3D = $GlowNum2
+@onready var glow_num_3: Node3D = $GlowNum3
+@onready var glow_num_4: Node3D = $GlowNum4
+
+func _ready() -> void:
+	set_room_numbers()
+	level_manager.progress_changed.connect(set_room_numbers)
+
+func set_room_numbers() -> void:
+	glow_num_1.show_mesh_by_number((level_manager.cur_progress * 4) +1)
+	glow_num_2.show_mesh_by_number((level_manager.cur_progress * 4) +2)
+	glow_num_3.show_mesh_by_number((level_manager.cur_progress * 4) +3)
+	glow_num_4.show_mesh_by_number((level_manager.cur_progress * 4) +4)
+	pass
+"
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ehxq4"]
 resource_name = "Grid"
 cull_mode = 2
@@ -217,6 +238,17 @@ metadata/extras = {
 resource_name = "BlackWall"
 cull_mode = 2
 albedo_texture = ExtResource("24_3dlwb")
+texture_filter = 2
+metadata/extras = {
+"yp": {
+"active_ypaint_node": ""
+}
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l36q7"]
+resource_name = "Carpet"
+cull_mode = 2
+albedo_texture = ExtResource("25_imu3w")
 texture_filter = 2
 metadata/extras = {
 "yp": {
@@ -333,6 +365,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 84,
 "index_data": PackedByteArray("AAABAAIAAAADAAEAAwAEAAUAAwAGAAQAAAAGAAMABgAAAAcABwAAAAgACQAKAAsACQAMAAoADAAJAA0ADgAPABAADgARAA8AEQAOABIAEwAUABUAFgAUABMAFAAWABcAFwAWABgAGQAaABsAHAAaABkAGgAcAB0AHQAcAB4AHQAeAB8AGgAdACAAGgAgACEAIgAjACQAIgAlACMAJgAlACIAJQAmACcA"),
+"material": SubResource("StandardMaterial3D_l36q7"),
 "name": "Carpet",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -585,12 +618,12 @@ _surfaces = [{
 "aabb": AABB(-2, -1.25, -7.7499995, 4, 2.5, 15.499999),
 "format": 34359742465,
 "index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAwACAAEAAwAEAAIAAAAFAAEAAAAGAAUAAAAHAAYACAAJAAoACAALAAkACwAMAAkACwANAAwADQAOAAwADQAPAA4A"),
+"index_data": PackedByteArray("AAABAAIAAwACAAEAAwAEAAIAAAAFAAEAAAAGAAUAAAAHAAYABgAHAAgABgAIAAkACgAJAAgACgAIAAsADAANAA4ADAAPAA0A"),
 "name": "Walls",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 16,
-"vertex_data": PackedByteArray("+///vwAAoL///6fAAAAAwAAAoD////fAAAAAwAAAoL////fA8///PwAAoD////fA8///PwAAoL////fA+///vwAAoD///6fA+///vwAAoD///6dA+///vwAAoL///6dA+f//PwAAoD8AAKjA+///PwAAoL/9/6dA+f//PwAAoL8AAKjA+///PwAAoD/9/6dAAAAAQAAAoL////dAAAAAQAAAoD////dA9f//vwAAoL////dA9f//vwAAoD////dA")
+"vertex_data": PackedByteArray("+///vwAAoL///6fAAAAAwAAAoD////fAAAAAwAAAoL////fA8///PwAAoD////fA8///PwAAoL////fA+///vwAAoD///6fA+///vwAAoD///6dA+///vwAAoL///6dA9f//vwAAoL////dA9f//vwAAoD////dAAAAAQAAAoD////dAAAAAQAAAoL////dA+f//PwAAoD8AAKjA+///PwAAoL/9/6dA+f//PwAAoL8AAKjA+///PwAAoD/9/6dA")
 }]
 blend_shape_mode = 0
 
@@ -622,16 +655,16 @@ _surfaces = [{
 "vertex_data": PackedByteArray("/v8AAEop/78AAAAAtNb/vwAAAABKKf+/AAAAAAAA/7/+/wAAAAD/v/7/AAC01v+/AAAAAP///7///wAA////v////3////9/////f////3////9/////f////3////9/")
 }, {
 "aabb": AABB(-2, -1.25, -7.7499995, 4, 2.5, 15.499999),
-"attribute_data": PackedByteArray("AADAPgAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAA4D7ctg0/AADgPgAAwD4AAOA+3LYNPwAA4D4AAMA+AADgPgAAwD4AAOA+3LYNPwAA4D4AAMA+AADgPty2DT8AAOA+3LYNPwAA4D4AAMA+AADgPgAAwD4AAOA+3LYNPwAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAAoD4AAMA+AACgPg=="),
+"attribute_data": PackedByteArray("AADAPgAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAA4D7ctg0/AADgPgAAwD4AAOA+AADAPgAA4D7ctg0/AADgPty2DT8AAOA+AADAPgAA4D4AAMA+AADgPty2DT8AAOA+3LYNPwAA4D4AAMA+AADgPgAAwD4AAOA+3LYNPwAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAAoD4AAMA+AACgPg=="),
 "format": 34359742487,
 "index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAAAEAAMAAAAFAAQABgAHAAgABgAJAAcACQAKAAcACQALAAoADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAAAEAAMAAAAFAAQABAAFAAYABAAGAAcACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
 "material": SubResource("StandardMaterial3D_vkgv0"),
 "name": "Walls",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 20,
-"vertex_data": PackedByteArray("+///vwAAoL///6fAAAAAwAAAoD////fAAAAAwAAAoL////fA+///vwAAoD///6fA+///vwAAoD///6dA+///vwAAoL///6dA+f//PwAAoD8AAKjA+///PwAAoL/9/6dA+f//PwAAoL8AAKjA+///PwAAoD/9/6dAAAAAQAAAoL////dAAAAAQAAAoD////dAAAAAQAAAoD////dA9f//vwAAoL////dAAAAAQAAAoL////dA9f//vwAAoD////dA8///PwAAoD////fAAAAAwAAAoL////fAAAAAwAAAoD////fA8///PwAAoL////fA////f/9/AAD///9//38AAP///3//fwAA////f/9/AAD///9/////v////3////+/AAD/f////78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vwAA/3////+//////////7//////////v/////////+//////////7//f/9/////P/9//3////8//3//f////z//f/9/////Pw==")
+"vertex_data": PackedByteArray("+///vwAAoL///6fAAAAAwAAAoD////fAAAAAwAAAoL////fA+///vwAAoD///6fA+///vwAAoD///6dA+///vwAAoL///6dA9f//vwAAoL////dA9f//vwAAoD////dA+f//PwAAoD8AAKjA+///PwAAoL/9/6dA+f//PwAAoL8AAKjA+///PwAAoD/9/6dAAAAAQAAAoD////dA9f//vwAAoL////dAAAAAQAAAoL////dA9f//vwAAoD////dA8///PwAAoD////fAAAAAwAAAoL////fAAAAAwAAAoD////fA8///PwAAoL////fA////f/9/AAD///9//38AAP///3//fwAA////f/9/AAD///9/////v////3////+/////f////7////9/////vwAA/3////+/AAD/f////78AAP9/////vwAA/3////+//////////7//////////v/////////+//////////7//f/9/////P/9//3////8//3//f////z//f/9/////Pw==")
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_s8vs8")
@@ -835,12 +868,12 @@ _surfaces = [{
 "aabb": AABB(-2.0000076, -1.25, -7.7500014, 4.0000153, 2.5, 15.500003),
 "format": 34359742465,
 "index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAwAEAAEAAwAFAAQABgAEAAUABgAFAAcACAAJAAoACAALAAkACgAMAAgACgANAAwADAANAA4ADAAOAA8A"),
+"index_data": PackedByteArray("AAABAAIAAAACAAMAAAAEAAEAAAADAAUABgAFAAMABgAHAAUABAAIAAEABAAJAAgACgAIAAkACgAJAAsADAANAA4ADAAPAA0A"),
 "name": "Walls",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 16,
-"vertex_data": PackedByteArray("EwAAQAAAoL/7/6dA0P//PwAAoD8DAKjAEwAAQAAAoD/7/6dA0P//PwAAoL8DAKjAtf//PwAAoD8DAPjAtf//PwAAoL8DAPjAIAAAwAAAoD/7//fAIAAAwAAAoL/7//fAzv//vwAAoD8EAKhAEwAAwAAAoL/5/6fAzv//vwAAoL8EAKhAEwAAwAAAoD/5/6fAs///vwAAoD8DAPhAs///vwAAoL8DAPhAIAAAQAAAoL/7//dAIAAAQAAAoD/7//dA")
+"vertex_data": PackedByteArray("EwAAQAAAoL/7/6dA0P//PwAAoD8DAKjAEwAAQAAAoD/7/6dAIAAAQAAAoD/7//dA0P//PwAAoL8DAKjAIAAAQAAAoL/7//dAs///vwAAoD8DAPhAs///vwAAoL8DAPhAtf//PwAAoD8DAPjAtf//PwAAoL8DAPjAIAAAwAAAoD/7//fAIAAAwAAAoL/7//fAzv//vwAAoD8EAKhAEwAAwAAAoL/5/6fAzv//vwAAoL8EAKhAEwAAwAAAoD/5/6fA")
 }]
 blend_shape_mode = 0
 
@@ -872,16 +905,16 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AAAAALTW/7/+/wAASin/v/7/AAC01v+///8AAP7//78AAAAA////vwAAAABKKf+//v8AAAAA/78AAAAAAAD/v////3////9/////f////3////9/////f////3////9/")
 }, {
 "aabb": AABB(-2.0000076, -1.25, -7.7500014, 4.0000153, 2.5, 15.500003),
-"attribute_data": PackedByteArray("AADAPgAA4D7ctg0/AADgPty2DT8AAOA+AADAPgAA4D7ctg0/AADgPgAAwD4AAOA+3LYNPwAA4D4AAMA+AADgPgAAwD4AAOA+3LYNPwAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAA4D4AAMA+AADgPgAAwD4AAOA+3LYNPwAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAAoD4AAMA+AACgPg=="),
+"attribute_data": PackedByteArray("AADAPgAA4D7ctg0/AADgPty2DT8AAOA+3LYNPwAAoD4AAMA+AACgPgAAwD4AAOA+3LYNPwAA4D4AAMA+AADgPty2DT8AAOA+AADAPgAA4D4AAMA+AADgPty2DT8AAOA+3LYNPwAA4D4AAMA+AADgPgAAwD4AAOA+3LYNPwAA4D7ctg0/AACgPgAAwD4AAKA+3LYNPwAAoD4AAMA+AACgPg=="),
 "format": 34359742487,
 "index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAwAEAAEAAwAFAAQABgAHAAgABgAJAAcACAAKAAYACAALAAoADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"index_data": PackedByteArray("AAABAAIAAAACAAMAAAADAAQAAAAFAAEABQAGAAEABQAHAAYACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
 "material": SubResource("StandardMaterial3D_vkgv0"),
 "name": "Walls",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 20,
-"vertex_data": PackedByteArray("EwAAQAAAoL/7/6dA0P//PwAAoD8DAKjAEwAAQAAAoD/7/6dA0P//PwAAoL8DAKjAtf//PwAAoD8DAPjAtf//PwAAoL8DAPjAzv//vwAAoD8EAKhAEwAAwAAAoL/5/6fAzv//vwAAoL8EAKhAEwAAwAAAoD/5/6fAs///vwAAoD8DAPhAs///vwAAoL8DAPhAIAAAwAAAoD/7//fAtf//PwAAoL8DAPjAIAAAwAAAoL/7//fAtf//PwAAoD8DAPjAs///vwAAoD8DAPhAIAAAQAAAoL/7//dAIAAAQAAAoD/7//dAs///vwAAoL8DAPhAAAD/f////78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vwAA/3////+/////f/9///////9/////v////3//f///////f////7////9//3///////3//f////3//f////z//f/9/////P/9//3////8//3//f////z//////////v/////////+//////////7//////////vw==")
+"vertex_data": PackedByteArray("EwAAQAAAoL/7/6dA0P//PwAAoD8DAKjAEwAAQAAAoD/7/6dAIAAAQAAAoD/7//dAIAAAQAAAoL/7//dA0P//PwAAoL8DAKjAtf//PwAAoD8DAPjAtf//PwAAoL8DAPjAzv//vwAAoD8EAKhAEwAAwAAAoL/5/6fAzv//vwAAoL8EAKhAEwAAwAAAoD/5/6fAIAAAwAAAoD/7//fAtf//PwAAoL8DAPjAIAAAwAAAoL/7//fAtf//PwAAoD8DAPjAs///vwAAoD8DAPhAIAAAQAAAoL/7//dAIAAAQAAAoD/7//dAs///vwAAoL8DAPhAAAD/f/9/AAAAAP9/////vwAA/3//fwAAAAD/f/9/AAAAAP9//38AAAAA/3////+/AAD/f////78AAP9/////v////3////+/////f////7////9/////v////3////+//3//f////z//f/9/////P/9//3////8//3//f////z//////////v/////////+//////////7//////////vw==")
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gtny5")
@@ -1053,12 +1086,178 @@ data = PackedVector3Array(-2, 1.25, 7.75, 1.9999, 1.25, 5.2497997, -2, 1.25, 5.2
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_og4ci"]
 data = PackedVector3Array(1.9999, 1.25, -7.75, -2, 1.25, -5.25, 1.9999, 1.25, -5.25, 1.9999, 1.25, -7.75, -2, 1.25, -7.75, -2, 1.25, -5.25, -2, 1.25, -5.25, 1.9999, 1.25, 5.2497997, 1.9999, 1.25, -5.25, -2, 1.25, -5.25, -2, 1.25, 5.2497997, 1.9999, 1.25, 5.2497997, -2, 1.25, 5.2497997, 2, 1.25, 7.75, 1.9999, 1.25, 5.2497997, -2, 1.25, 5.2497997, -2, 1.25, 7.75, 2, 1.25, 7.75, 1.9999, -1.25, -5.25, -2, -1.25, 5.2497997, -2, -1.25, -5.25, 1.9999, -1.25, -5.25, -2, -1.25, -5.25, -2, -1.25, -7.75, 1.9999, -1.25, -5.25, -2, -1.25, -7.75, 1.9999, -1.25, -7.75, 1.9999, -1.25, -5.25, 1.9999, -1.25, 5.2497997, -2, -1.25, 5.2497997, 1.9999, -1.25, 5.2497997, -2, -1.25, 7.75, -2, -1.25, 5.2497997, 1.9999, -1.25, 5.2497997, 2, -1.25, 7.75, -2, -1.25, 7.75, -2, -1.25, -5.25, -2, 1.25, -7.75, -2, -1.25, -7.75, -2, -1.25, -5.25, -2, 1.25, -5.25, -2, 1.25, -7.75, -2, -1.25, -5.25, -2, 1.25, 5.25, -2, 1.25, -5.25, -2, -1.25, -5.25, -2, -1.25, 5.25, -2, 1.25, 5.25, 2, 1.25, -5.25, 2, -1.25, 5.25, 2, -1.25, -5.25, 2, 1.25, -5.25, 2, 1.25, 5.25, 2, -1.25, 5.25, 2, 1.25, 5.25, 2, -1.25, 7.75, 2, -1.25, 5.25, 2, 1.25, 5.25, 2, 1.25, 7.75, 2, -1.25, 7.75, 2, 1.25, 7.75, -2, -1.25, 7.75, 2, -1.25, 7.75, 2, 1.25, 7.75, -2, 1.25, 7.75, -2, -1.25, 7.75, 2, 1.25, -7.75, -2, -1.25, -7.75, -2, 1.25, -7.75, 2, 1.25, -7.75, 2, -1.25, -7.75, -2, -1.25, -7.75)
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_o2my1"]
-vertices = PackedVector3Array(-5.799999, -1.7502251, -6.50065, -3.2999992, -1.7502251, -6.40065, -3.2999992, -1.7502251, -7.00065, -2.5999985, -1.7502251, -7.10065, -2.6999989, -1.7502251, -9.80065, -5.799999, -1.7502251, -9.80065, -0.39999962, -1.7502251, -7.10065, -0.39999962, -1.7502251, -9.80065, 8.200001, -1.7502251, -6.00065, 10.700001, -1.7502251, -5.90065, 10.700001, -1.7502251, -6.50065, 11.4, -1.7502251, -6.60065, 11.300001, -1.7502251, -9.30065, 8.200001, -1.7502251, -9.30065, 13.6, -1.7502251, -6.60065, 13.6, -1.7502251, -9.30065, -5.799999, -1.7502251, -4.2006497, -3.2999992, -1.7502251, -4.30065, 8.200001, -1.7502251, -4.2006497, 10.700001, -1.7502251, -4.30065, -8.7, -1.7502251, 2.3993502, -8.599999, -1.7502251, -2.3006501, -9.299999, -1.7502251, -2.3006501, -18.4, -1.7502251, -2.3006501, -18.4, -1.7502251, 2.3993502, -17.699999, -1.7502251, 2.3993502, -17.6, -1.7502251, -2.40065, -17.5, -1.7502251, 2.59935, -9.499999, -1.7502251, 2.4993505, -9.499999, -1.7502251, -2.50065, -10.9, -1.7502251, 5.89935, -16.199999, -1.7502251, -5.80065, -10.799999, -1.7502251, -5.80065, -16.199999, -1.7502251, 5.89935, -5.799999, -1.7502251, -3.50065, -6.0999994, -1.7502251, -3.3006501, -6.499999, -1.7502251, -2.50065, -2.2999992, -1.7502251, -2.3006501, -2.5999985, -1.7502251, -2.6006498, -3, -1.7502251, -3.40065, -3.2999992, -1.7502251, -3.6006498, -6.7, -1.7502251, -2.3006501, -7.299999, -1.7502251, -2.3006501, -7.2, -1.7502251, 2.3993502, -1.7999992, -1.7502251, 2.3993502, -1.6999989, -1.7502251, -2.3006501, 8.200001, -1.7502251, -3.50065, 7.9000015, -1.7502251, -3.3006501, 7.5, -1.7502251, -2.50065, 11.700003, -1.7502251, -2.3006501, 11.4, -1.7502251, -2.6006498, 11, -1.7502251, -3.40065, 10.700001, -1.7502251, -3.6006498, 7.300001, -1.7502251, -2.3006501, 6.700001, -1.7502251, -2.3006501, 6.800001, -1.7502251, 2.3993502, 12.200003, -1.7502251, 2.3993502, 12.300001, -1.7502251, -2.3006501, -20.8, -1.7502251, -2.3006501, -20.9, -1.7502251, -1.2006502, -20.8, -1.7502251, 2.3993502, -0.19999886, -1.7502251, 2.3993502, -0.099998474, -1.7502251, -2.3006501, 0.5, -1.7502251, 2.4993505, 0.9000015, -1.7502251, 3.2993498, 1.2000008, -1.7502251, 3.4993505, 4.4000015, -1.7502251, 2.59935, 4.6000004, -1.7502251, 2.3993502, 3.7000008, -1.7502251, 3.59935, 4, -1.7502251, 3.3993502, 1.2000008, -1.7502251, 4.1993504, 3.7000008, -1.7502251, 4.29935, 5.200001, -1.7502251, 2.3993502, 5.1000004, -1.7502251, -2.3006501, 13.800001, -1.7502251, 2.3993502, 13.9, -1.7502251, -2.3006501, 14.500002, -1.7502251, 2.4993505, 14.9, -1.7502251, 3.2993498, 15.200003, -1.7502251, 3.4993505, 17.700003, -1.7502251, 3.59935, 18.6, -1.7502251, 2.3993502, 15.200003, -1.7502251, 4.1993504, 17.700003, -1.7502251, 4.29935, 20.9, -1.7502251, -2.3006501, 20.9, -1.7502251, 2.3993502, 1.2000008, -1.7502251, 6.59935, 3.7000008, -1.7502251, 6.4993496, 15.200003, -1.7502251, 6.09935, 17.700003, -1.7502251, 5.9993505, 17.700003, -1.7502251, 6.59935, 18.300001, -1.7502251, 9.399351, 18.4, -1.7502251, 6.6993504, 15.200003, -1.7502251, 9.399351, 3.7000008, -1.7502251, 7.09935, 4.300001, -1.7502251, 9.899351, 4.4000015, -1.7502251, 7.1993504, 1.2000008, -1.7502251, 9.899351, 20.6, -1.7502251, 9.399351, 20.6, -1.7502251, 6.6993504, 6.6000004, -1.7502251, 9.899351, 6.6000004, -1.7502251, 7.1993504)
-polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(4, 3, 2), PackedInt32Array(0, 5, 2), PackedInt32Array(2, 5, 4), PackedInt32Array(6, 3, 7), PackedInt32Array(7, 3, 4), PackedInt32Array(10, 9, 8), PackedInt32Array(12, 11, 10), PackedInt32Array(8, 13, 10), PackedInt32Array(10, 13, 12), PackedInt32Array(14, 11, 15), PackedInt32Array(15, 11, 12), PackedInt32Array(1, 17, 0), PackedInt32Array(0, 17, 16), PackedInt32Array(9, 19, 8), PackedInt32Array(8, 19, 18), PackedInt32Array(22, 21, 20), PackedInt32Array(25, 24, 23), PackedInt32Array(25, 23, 27), PackedInt32Array(27, 23, 26), PackedInt32Array(22, 20, 29), PackedInt32Array(29, 20, 28), PackedInt32Array(26, 31, 27), PackedInt32Array(27, 31, 29), PackedInt32Array(27, 29, 28), PackedInt32Array(27, 28, 30), PackedInt32Array(31, 32, 29), PackedInt32Array(30, 33, 27), PackedInt32Array(35, 34, 36), PackedInt32Array(36, 34, 38), PackedInt32Array(36, 38, 37), PackedInt32Array(39, 38, 40), PackedInt32Array(40, 38, 34), PackedInt32Array(34, 16, 40), PackedInt32Array(40, 16, 17), PackedInt32Array(41, 43, 42), PackedInt32Array(37, 45, 44), PackedInt32Array(36, 37, 41), PackedInt32Array(41, 37, 44), PackedInt32Array(41, 44, 43), PackedInt32Array(47, 46, 48), PackedInt32Array(48, 46, 50), PackedInt32Array(48, 50, 49), PackedInt32Array(51, 50, 52), PackedInt32Array(52, 50, 46), PackedInt32Array(46, 18, 52), PackedInt32Array(52, 18, 19), PackedInt32Array(55, 54, 53), PackedInt32Array(49, 57, 56), PackedInt32Array(48, 49, 53), PackedInt32Array(53, 49, 56), PackedInt32Array(53, 56, 55), PackedInt32Array(58, 23, 59), PackedInt32Array(59, 23, 60), PackedInt32Array(60, 23, 24), PackedInt32Array(42, 43, 21), PackedInt32Array(21, 43, 20), PackedInt32Array(44, 45, 61), PackedInt32Array(61, 45, 62), PackedInt32Array(64, 63, 65), PackedInt32Array(65, 63, 66), PackedInt32Array(66, 63, 67), PackedInt32Array(69, 68, 66), PackedInt32Array(66, 68, 65), PackedInt32Array(65, 68, 70), PackedInt32Array(70, 68, 71), PackedInt32Array(73, 72, 67), PackedInt32Array(63, 61, 67), PackedInt32Array(67, 61, 62), PackedInt32Array(67, 62, 73), PackedInt32Array(73, 54, 72), PackedInt32Array(72, 54, 55), PackedInt32Array(56, 57, 74), PackedInt32Array(74, 57, 75), PackedInt32Array(77, 76, 78), PackedInt32Array(78, 76, 79), PackedInt32Array(79, 76, 80), PackedInt32Array(78, 79, 81), PackedInt32Array(81, 79, 82), PackedInt32Array(76, 74, 80), PackedInt32Array(80, 74, 75), PackedInt32Array(80, 75, 83), PackedInt32Array(83, 84, 80), PackedInt32Array(86, 85, 71), PackedInt32Array(71, 85, 70), PackedInt32Array(88, 87, 82), PackedInt32Array(82, 87, 81), PackedInt32Array(87, 88, 89), PackedInt32Array(89, 91, 90), PackedInt32Array(87, 89, 92), PackedInt32Array(92, 89, 90), PackedInt32Array(85, 86, 93), PackedInt32Array(93, 95, 94), PackedInt32Array(85, 93, 96), PackedInt32Array(96, 93, 94), PackedInt32Array(98, 97, 91), PackedInt32Array(91, 97, 90), PackedInt32Array(100, 99, 95), PackedInt32Array(95, 99, 94)]
-cell_size = 0.1
-border_size = 0.01
-agent_radius = 0.1
+[sub_resource type="NavigationMesh" id="NavigationMesh_kqiko"]
+vertices = PackedVector3Array(21.75, 0.499825, -7.0006504, 24.5, 0.499825, -7.0006504, 24.5, 0.499825, -9.75065, 19.25, 0.499825, -9.75065, 18.25, 0.499825, -2.2506504, 17, 0.499825, -2.2506504, 17, 0.499825, 2.4993496, 19.25, 0.499825, -3.5006504, 22, 0.499825, -3.0006504, 24, 0.499825, 2.4993496, 22.5, 0.499825, -2.2506504, 24.25, 0.499825, -2.2506504, 35.75, 0.499825, -6.5006504, 38.5, 0.499825, -6.5006504, 38.5, 0.499825, -9.25065, 33.25, 0.499825, -9.25065, 32.25, 0.499825, -2.2506504, 30.75, 0.499825, -2.2506504, 31, 0.499825, 2.4993496, 33.25, 0.499825, -3.5006504, 36, 0.499825, -3.0006504, 38, 0.499825, 2.4993496, 38.25, 0.499825, -2.2506504, 36.5, 0.499825, -2.2506504, 7.25, 0.499825, -2.2506504, 4.25, 0.499825, -2.2506504, 4, 0.499825, -1.0006504, 4.25, 0.499825, 2.4993496, 7.5, 0.499825, 2.4993496, 8.75, 0.499825, 5.9993496, 14, 0.499825, 5.9993496, 15.5, 0.499825, -2.2506504, 14.25, 0.499825, -5.7506504, 8.75, 0.499825, -5.7506504, 15.5, 0.499825, 2.4993496, 21.75, 2.999825, -3.7506504, 22.75, 2.999825, -2.5006504, 22.25, 2.999825, -3.7506504, 35.75, 2.999825, -3.7506504, 36.75, 2.999825, -2.5006504, 36.25, 2.999825, -3.7506504, 31.5, 0.499825, 9.99935, 31.5, 0.499825, 7.2493496, 28.75, 0.499825, 7.2493496, 26.25, 0.499825, 9.99935, 29.5, 0.499825, 2.4993496, 26.25, 0.499825, 3.4993496, 28.75, 0.499825, 3.4993496, 25.5, 0.499825, 2.4993496, 45.5, 0.499825, 9.49935, 45.5, 0.499825, 6.7493496, 42.75, 0.499825, 6.7493496, 40.25, 0.499825, 9.49935, 39.5, 0.499825, 2.4993496, 40.25, 0.499825, 3.4993496, 42.75, 0.499825, 3.4993496, 43.5, 0.499825, 2.4993496, 46, 0.499825, -2.2506504, 46, 0.499825, 2.4993496, 28.75, 2.999825, 7.2493496, 31.75, 2.999825, 7.2493496, 29, 2.999825, 6.9993496, 29, 2.999825, 3.7493496, 29.75, 2.999825, 2.7493496, 28.75, 2.999825, 3.4993496, 43.25, 2.999825, 3.7493496, 43.75, 2.999825, 2.9993496, 43.25, 2.999825, 2.7493496, 42.75, 2.999825, 3.4993496)
+polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(6, 5, 4), PackedInt32Array(8, 7, 0), PackedInt32Array(0, 7, 3), PackedInt32Array(8, 10, 7), PackedInt32Array(7, 10, 4), PackedInt32Array(4, 10, 6), PackedInt32Array(6, 10, 9), PackedInt32Array(10, 11, 9), PackedInt32Array(13, 12, 14), PackedInt32Array(14, 12, 15), PackedInt32Array(18, 17, 16), PackedInt32Array(20, 19, 12), PackedInt32Array(12, 19, 15), PackedInt32Array(23, 22, 21), PackedInt32Array(20, 23, 19), PackedInt32Array(19, 23, 16), PackedInt32Array(16, 23, 18), PackedInt32Array(18, 23, 21), PackedInt32Array(25, 24, 26), PackedInt32Array(26, 24, 27), PackedInt32Array(27, 24, 28), PackedInt32Array(30, 29, 28), PackedInt32Array(33, 32, 31), PackedInt32Array(34, 31, 6), PackedInt32Array(6, 31, 5), PackedInt32Array(24, 33, 28), PackedInt32Array(28, 33, 31), PackedInt32Array(28, 31, 34), PackedInt32Array(28, 34, 30), PackedInt32Array(35, 37, 36), PackedInt32Array(38, 40, 39), PackedInt32Array(42, 41, 43), PackedInt32Array(43, 41, 44), PackedInt32Array(17, 18, 45), PackedInt32Array(47, 43, 46), PackedInt32Array(46, 43, 44), PackedInt32Array(46, 48, 47), PackedInt32Array(47, 48, 45), PackedInt32Array(45, 48, 11), PackedInt32Array(45, 11, 17), PackedInt32Array(48, 9, 11), PackedInt32Array(50, 49, 51), PackedInt32Array(51, 49, 52), PackedInt32Array(53, 21, 22), PackedInt32Array(55, 51, 54), PackedInt32Array(54, 51, 52), PackedInt32Array(54, 53, 55), PackedInt32Array(55, 53, 56), PackedInt32Array(56, 53, 22), PackedInt32Array(56, 22, 57), PackedInt32Array(57, 58, 56), PackedInt32Array(61, 60, 59), PackedInt32Array(64, 63, 62), PackedInt32Array(62, 61, 64), PackedInt32Array(64, 61, 59), PackedInt32Array(68, 67, 65), PackedInt32Array(65, 67, 66)]
+agent_radius = 0.0
+
+[sub_resource type="Shader" id="Shader_5nwvk"]
+code = "shader_type spatial;
+render_mode unshaded;
+
+/// https://godotshaders.com/shader/portal-card-n64-entrance sweetbabyalaska CC0
+/// some info about how this works:
+/// https://www.youtube.com/watch?v=NCXr8zrT5zs
+
+/** base color **/
+uniform vec4 color : source_color;
+//uniform vec4 second_color : source_color;
+
+/** how deep can we see behind the plane before objects are obscured with fog **/
+uniform float depth_fade_distance : hint_range(0.0, 33.0, 0.01) = 1.5;
+
+group_uniforms camera;
+/** fade out portal card as the camera gets closer to it **/
+uniform bool use_camera_fade = true;
+/** camera distance before the material starts to fade **/
+uniform float cam_fade_length : hint_range(0.0, 10.0, 0.01) = 5.0;
+
+/// vertical edge fade (softens edges)
+//uniform float fade_falloff_v : hint_range(0.0, 10.0, 0.01) = 0.5;
+/// upper edge fade (softens edges)
+//uniform float fade_falloff_u : hint_range(0.0, 10.0, 0.01) = 0.5;
+//uniform float depth_fade_falloff : hint_range(0.0, 33.0, 0.01) = 0.5;
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+void fragment() {
+	// represented as value from 0 - 1 
+	float depth = textureLod(DEPTH_TEXTURE, SCREEN_UV, 0.0).r;
+	// represented as value from -1 - 1
+	vec4 ndc = vec4(SCREEN_UV * 2.0 - 1.0, depth, 1.0);
+	
+	// slow way:
+	//vec4 view = INV_PROJECTION_MATRIX * ndc;
+	//view.z /= view.w;
+	//float linear_depth = view.z;
+	
+	// faster way to do the above
+	float linear_depth = 1.0 / (depth * INV_PROJECTION_MATRIX[2].w  + INV_PROJECTION_MATRIX[3].w); // 1.0 is negated like -view.z
+	// in view space, represents the objects distance past the plane
+	float cam_to_plane = linear_depth + VERTEX.z;
+	
+	// clamp distance to fade off after this point
+	float final = clamp(cam_to_plane / depth_fade_distance, 0, 1); // 3.0 being in meters behind the plane
+
+	float fadeout = clamp(smoothstep(0.0, cam_fade_length, length(VERTEX)), 0.0, 1.0);
+	
+	ALBEDO = vec3(final) * color.rgb;
+	ALPHA = final * fadeout;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kqiko"]
+render_priority = 0
+shader = SubResource("Shader_5nwvk")
+shader_parameter/color = Color(0, 0, 0, 1)
+shader_parameter/depth_fade_distance = 0.999999977648
+shader_parameter/use_camera_fade = true
+shader_parameter/cam_fade_length = 5.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_c05vk"]
+material = SubResource("ShaderMaterial_kqiko")
+size = Vector3(6, 3, 6)
+
+[sub_resource type="Shader" id="Shader_n2aqs"]
+code = "shader_type spatial;
+render_mode unshaded;
+
+/// https://godotshaders.com/shader/portal-card-n64-entrance sweetbabyalaska CC0
+/// some info about how this works:
+/// https://www.youtube.com/watch?v=NCXr8zrT5zs
+
+/** base color **/
+uniform vec4 color : source_color;
+//uniform vec4 second_color : source_color;
+
+/** how deep can we see behind the plane before objects are obscured with fog **/
+uniform float depth_fade_distance : hint_range(0.0, 33.0, 0.01) = 1.5;
+
+group_uniforms camera;
+/** fade out portal card as the camera gets closer to it **/
+uniform bool use_camera_fade = true;
+/** camera distance before the material starts to fade **/
+uniform float cam_fade_length : hint_range(0.0, 10.0, 0.01) = 5.0;
+
+/// vertical edge fade (softens edges)
+//uniform float fade_falloff_v : hint_range(0.0, 10.0, 0.01) = 0.5;
+/// upper edge fade (softens edges)
+//uniform float fade_falloff_u : hint_range(0.0, 10.0, 0.01) = 0.5;
+//uniform float depth_fade_falloff : hint_range(0.0, 33.0, 0.01) = 0.5;
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+void fragment() {
+	// represented as value from 0 - 1 
+	float depth = textureLod(DEPTH_TEXTURE, SCREEN_UV, 0.0).r;
+	// represented as value from -1 - 1
+	vec4 ndc = vec4(SCREEN_UV * 2.0 - 1.0, depth, 1.0);
+	
+	// slow way:
+	//vec4 view = INV_PROJECTION_MATRIX * ndc;
+	//view.z /= view.w;
+	//float linear_depth = view.z;
+	
+	// faster way to do the above
+	float linear_depth = 1.0 / (depth * INV_PROJECTION_MATRIX[2].w  + INV_PROJECTION_MATRIX[3].w); // 1.0 is negated like -view.z
+	// in view space, represents the objects distance past the plane
+	float cam_to_plane = linear_depth + VERTEX.z;
+	
+	// clamp distance to fade off after this point
+	float final = clamp(cam_to_plane / depth_fade_distance, 0, 1); // 3.0 being in meters behind the plane
+
+	float fadeout = clamp(smoothstep(0.0, cam_fade_length, length(VERTEX)), 0.0, 1.0);
+	
+	ALBEDO = vec3(final) * color.rgb;
+	ALPHA = final * fadeout;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c05vk"]
+render_priority = 0
+shader = SubResource("Shader_n2aqs")
+shader_parameter/color = Color(0, 0, 0, 1)
+shader_parameter/depth_fade_distance = 1.5
+shader_parameter/use_camera_fade = true
+shader_parameter/cam_fade_length = 5.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_qbdyw"]
+material = SubResource("ShaderMaterial_c05vk")
+size = Vector3(6, 3, 6)
+
+[sub_resource type="GDScript" id="GDScript_5nwvk"]
+resource_name = "WinScript"
+script/source = "extends Node3D
+@onready var win_open_area: Area3D = $WinOpenArea
+
+@onready var door_open_area: Area3D = $DoorOpenArea
+@onready var level_manager: LevelManager = $\"../Level Manager\"
+@onready var right_door: StaticBody3D = $\"../CinemaLevel1_Imported/MainHall/PackedScene_CinemaDoorL_003\"
+@onready var left_door: StaticBody3D = $\"../CinemaLevel1_Imported/MainHall/PackedScene_CinemaDoorR_003\"
+
+var tween:Tween
+
+func _ready() -> void:
+	door_open_area.body_entered.connect(win_logic)
+	win_open_area.body_entered.connect(on_win_enter)
+
+func win_logic(body:Node3D) -> void:
+	if body.is_in_group(\"Player\") and level_manager.cur_progress == 6:
+		tween = create_tween().set_ease(tween.EASE_OUT).set_parallel(true)
+		tween.set_trans(tween.TRANS_LINEAR)
+		tween.tween_property(left_door, \"rotation:y\", deg_to_rad(-95.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CIRC)
+		tween.tween_property(right_door, \"rotation:y\", deg_to_rad(-265.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CIRC)
+
+func on_win_enter(body:Node3D) -> void:
+	if body.is_in_group(\"Player\") and level_manager.cur_progress == 6:
+		body.on_win()
+		print(\"sueme\")
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kqiko"]
+size = Vector3(5, 3, 5)
 
 [node name="CinemaLevel" type="Node3D"]
 
@@ -1152,23 +1351,29 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.72
 [node name="Telepoints" type="Node3D" parent="."]
 
 [node name="Backwards" type="Area3D" parent="Telepoints" node_paths=PackedStringArray("exit_corridor", "entrance_corridor")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5207506, 0.7893677, 8.521624)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5207506, 0.7893677, 7.249858)
 script = ExtResource("22_r11fm")
-exit_corridor = NodePath("../../CinemaLevel1_Imported/StaticBody3D_EntranceHallCol")
-entrance_corridor = NodePath("../../CinemaLevel1_Imported/StaticBody3D_EntranceHallCol")
+exit_corridor = NodePath("../StaticBody3D_EntranceHallCol")
+entrance_corridor = NodePath("../StaticBody3D_EntranceHallCol")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Telepoints/Backwards"]
 shape = SubResource("BoxShape3D_bjhaf")
 
 [node name="Forwards" type="Area3D" parent="Telepoints" node_paths=PackedStringArray("exit_corridor", "entrance_corridor")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 50.364067, 0.8306036, 6.51394)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 50.364067, 0.8306036, 4.381051)
 script = ExtResource("22_r11fm")
 area_forward = true
-exit_corridor = NodePath("../../CinemaLevel1_Imported/StaticBody3D_ExitHallCol")
-entrance_corridor = NodePath("../../CinemaLevel1_Imported/StaticBody3D_EntranceHallCol")
+exit_corridor = NodePath("../StaticBody3D_ExitHallCol")
+entrance_corridor = NodePath("../StaticBody3D_EntranceHallCol")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Telepoints/Forwards"]
 shape = SubResource("BoxShape3D_bjhaf")
+
+[node name="StaticBody3D_ExitHallCol" type="StaticBody3D" parent="Telepoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.000004, 1.25, 6.4996214)
+
+[node name="StaticBody3D_EntranceHallCol" type="StaticBody3D" parent="Telepoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9999971, 1.25, 6.4997325)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.272256, 0, 6.3339167)
@@ -1183,10 +1388,6 @@ data = SubResource("VoxelGIData_bjhaf")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_bwcsc")
-
-[node name="CinemaLevel1" parent="." instance=ExtResource("23_tc74v")]
-visible = false
-metadata/run = false
 
 [node name="Actors" type="Node3D" parent="."]
 
@@ -1232,6 +1433,23 @@ mesh = SubResource("CylinderMesh_kqiko")
 transform = Transform3D(0.40566808, 0.9140205, 0, 3.9953104e-08, -1.7732319e-08, -1, -0.9140205, 0.40566808, -4.371139e-08, 15.143696, 0.077183336, 3.8946097)
 mesh = SubResource("CylinderMesh_kqiko")
 
+[node name="CinemaSounds" type="Node3D" parent="."]
+
+[node name="GlowingNumbersCollection" type="Node3D" parent="."]
+script = SubResource("GDScript_n2aqs")
+
+[node name="GlowNum1" parent="GlowingNumbersCollection" instance=ExtResource("31_kqiko")]
+transform = Transform3D(0.57357645, 0, -0.81915206, 0, 1, 0, 0.81915206, 0, 0.57357645, 22.279936, 1.3406777, -3.0629575)
+
+[node name="GlowNum3" parent="GlowingNumbersCollection" instance=ExtResource("31_kqiko")]
+transform = Transform3D(0.57357645, 0, -0.81915206, 0, 1, 0, 0.81915206, 0, 0.57357645, 36.28218, 1.3406777, -3.0629575)
+
+[node name="GlowNum4" parent="GlowingNumbersCollection" instance=ExtResource("31_kqiko")]
+transform = Transform3D(-0.57357633, 0, -0.8191521, 0, 1, 0, 0.8191521, 0, -0.57357633, 43.298717, 1.3406777, 3.0375597)
+
+[node name="GlowNum2" parent="GlowingNumbersCollection" instance=ExtResource("31_kqiko")]
+transform = Transform3D(-0.57357633, 0, -0.8191521, 0, 1, 0, 0.8191521, 0, -0.57357633, 29.297709, 1.3406777, 3.0375597)
+
 [node name="CinemaLevel1_Imported" type="Node3D" parent="."]
 metadata/run = false
 
@@ -1249,13 +1467,11 @@ metadata/extras = {
 "material_0": "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres",
 "material_1": "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/RedCarpet.tres",
 "material_2": "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres",
-"material_3": "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/Carpet.tres",
 "material_4": "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 }
 metadata/material_0 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 metadata/material_1 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/RedCarpet.tres"
 metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
-metadata/material_3 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/Carpet.tres"
 metadata/material_4 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 metadata/collision = "trimesh"
 
@@ -1299,7 +1515,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.233261, -0.84992516, -5.007
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 15.233513, -0.84992516, 5.0077705)
 
 [node name="PackedScene_CinemaDoorL_003" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("27_tutmf")]
-transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 1.2330151, -0.84992516, 5.0077715)
+transform = Transform3D(-1, 0, -8.662515e-07, 0, 1, 0, 8.662515e-07, 0, -1, 1.2330151, -0.84992516, 5.0077715)
 
 [node name="PackedScene_CinemaDoorR" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("27_tutmf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.266985, -0.84992516, -5.0077705)
@@ -1311,7 +1527,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.733513, -0.84992516, -5.00
 transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 17.733765, -0.84992516, 5.0077705)
 
 [node name="PackedScene_CinemaDoorR_003" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("26_imu3w")]
-transform = Transform3D(-1, 0, -8.026785e-07, 0, 1, 0, 8.026785e-07, 0, -1, 3.7332668, -0.84992516, 5.007771)
+transform = Transform3D(-1, 0, -8.662515e-07, 0, 1, 0, 8.662515e-07, 0, -1, 3.7332668, -0.84992516, 5.007771)
 
 [node name="PackedScene_PosterFrame" parent="CinemaLevel1_Imported/MainHall" instance=ExtResource("26_3dlwb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5687313, -0.27705693, -2.4999998)
@@ -1389,17 +1605,16 @@ metadata/material_1 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/
 metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 
 [node name="PackedScene_CinemaDoorL_005" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("27_tutmf")]
-transform = Transform3D(-0.9848076, 0, -0.17364845, 0, 1, 0, 0.17364845, 0, -0.9848076, -6.753587, 0.15012491, 7.7500873)
+transform = Transform3D(0.98480767, 0, 0.17364877, 0, 1, 0, -0.17364877, 0, 0.98480767, 6.7535915, 0.15012491, 5.249746)
 
 [node name="PackedScene_CinemaDoorL_007" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("26_imu3w")]
 transform = Transform3D(-0.98480785, 0, 0.1736483, 0, 1, 0, -0.1736483, 0, -0.98480785, 6.753588, 0.15012491, -5.2497506)
 
 [node name="PackedScene_CinemaDoorR_005" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("26_imu3w")]
-transform = Transform3D(0.9848077, 0, -0.17364827, 0, 1, 0, 0.17364827, 0, 0.9848077, -6.753578, 0.15012491, 5.249828)
+transform = Transform3D(-0.98480785, 0, 0.1736483, 0, 1, 0, -0.1736483, 0, -0.98480785, 6.753583, 0.15012491, 7.7500052)
 
 [node name="PackedScene_CinemaDoorR_007" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("27_tutmf")]
 transform = Transform3D(0.9848077, 0, 0.17364827, 0, 1, 0, -0.17364827, 0, 0.9848077, 6.7535844, 0.15012491, -7.7500014)
-starting_rotation = 12.0
 
 [node name="StaticBody3D_Exit_001" type="StaticBody3D" parent="CinemaLevel1_Imported/EntranceHall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4999943, 0, -6.5000014)
@@ -1423,9 +1638,10 @@ shape = SubResource("ConcavePolygonShape3D_5nwvk")
 debug_fill = false
 
 [node name="StaticBody3D_Exit_004" type="StaticBody3D" parent="CinemaLevel1_Imported/EntranceHall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.499995, 0, 6.4998336)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 6.4999995)
 
 [node name="Exit_004" type="MeshInstance3D" parent="CinemaLevel1_Imported/EntranceHall/StaticBody3D_Exit_004"]
+transform = Transform3D(-1, 0, -3.8941437e-07, 0, 1, 0, 3.8941437e-07, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_kbp46")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("1_lguoa")
@@ -1440,6 +1656,7 @@ metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders
 metadata/collision = "trimesh"
 
 [node name="CollisionShape3D_Exit_004" type="CollisionShape3D" parent="CinemaLevel1_Imported/EntranceHall/StaticBody3D_Exit_004"]
+transform = Transform3D(-1, 0, -3.8941437e-07, 0, 1, 0, 3.8941437e-07, 0, -1, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_kqiko")
 debug_fill = false
 
@@ -1471,13 +1688,13 @@ metadata/collision = "trimesh"
 transform = Transform3D(-0.9848076, 0, -0.17364894, 0, 1, 0, 0.17364894, 0, -0.9848076, -6.7535934, 0.15012491, -5.2497435)
 
 [node name="PackedScene_CinemaDoorL_006" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("26_imu3w")]
-transform = Transform3D(-0.98480785, 0, 0.1736483, 0, 1, 0, -0.1736483, 0, -0.98480785, 6.753601, 0.15012491, 7.750085)
+transform = Transform3D(0.9848078, 0, -0.17364797, 0, 1, 0, 0.17364797, 0, 0.9848078, -6.7535896, 0.15012491, 5.249753)
 
 [node name="PackedScene_CinemaDoorR_004" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("26_imu3w")]
 transform = Transform3D(0.9848077, 0, -0.17364827, 0, 1, 0, 0.17364827, 0, 0.9848077, -6.753586, 0.15012491, -7.750003)
 
 [node name="PackedScene_CinemaDoorR_006" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("27_tutmf")]
-transform = Transform3D(0.98480767, 0, 0.17364877, 0, 1, 0, -0.17364877, 0, 0.98480767, 6.753601, 0.15012491, 5.249835)
+transform = Transform3D(-0.9848076, 0, -0.17364909, 0, 1, 0, 0.17364909, 0, -0.9848076, -6.7535896, 0.15012491, 7.750003)
 
 [node name="StaticBody3D_Exit_002" type="StaticBody3D" parent="CinemaLevel1_Imported/ExitHall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.500004, 0, -6.4999967)
@@ -1504,9 +1721,10 @@ shape = SubResource("ConcavePolygonShape3D_n2aqs")
 debug_fill = false
 
 [node name="StaticBody3D_Exit_003" type="StaticBody3D" parent="CinemaLevel1_Imported/ExitHall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5000076, 0, 6.499836)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.499996, 0, 6.500002)
 
 [node name="Exit_003" type="MeshInstance3D" parent="CinemaLevel1_Imported/ExitHall/StaticBody3D_Exit_003"]
+transform = Transform3D(-1, 0, -3.8941437e-07, 0, 1, 0, 3.8941437e-07, 0, -1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xcgp5")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("1_lguoa")
@@ -1524,6 +1742,7 @@ metadata/material_1 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/
 metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 
 [node name="CollisionShape3D_Exit_003" type="CollisionShape3D" parent="CinemaLevel1_Imported/ExitHall/StaticBody3D_Exit_003"]
+transform = Transform3D(-1, 0, -3.8941437e-07, 0, 1, 0, 3.8941437e-07, 0, -1, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_c05vk")
 debug_fill = false
 
@@ -1555,30 +1774,69 @@ shape = SubResource("ConcavePolygonShape3D_og4ci")
 debug_fill = false
 
 [node name="MainHallNavMesh_NavMesh" type="NavigationRegion3D" parent="CinemaLevel1_Imported"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 2.25005, 0)
-visible = false
-navigation_mesh = SubResource("NavigationMesh_o2my1")
+navigation_mesh = SubResource("NavigationMesh_kqiko")
 
-[node name="MainHall" type="MeshInstance3D" parent="CinemaLevel1_Imported/MainHallNavMesh_NavMesh"]
+[node name="MainHall2" type="MeshInstance3D" parent="CinemaLevel1_Imported/MainHallNavMesh_NavMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 2.25005, 0)
 visible = false
 mesh = SubResource("ArrayMesh_vj6p0")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("1_lguoa")
 surface_material_override/1 = ExtResource("23_imu3w")
 surface_material_override/2 = ExtResource("1_lguoa")
-surface_material_override/3 = ExtResource("24_tutmf")
+surface_material_override/3 = ExtResource("25_5nwvk")
 surface_material_override/4 = ExtResource("1_lguoa")
 metadata/extras = {
 "collision": "trimesh",
 "material_0": "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres",
 "material_1": "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/RedCarpet.tres",
 "material_2": "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres",
-"material_3": "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/Carpet.tres",
 "material_4": "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 }
 metadata/material_0 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 metadata/material_1 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/RedCarpet.tres"
 metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
-metadata/material_3 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/cinema_level/textures/Carpet.tres"
 metadata/material_4 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 metadata/collision = "trimesh"
+
+[node name="ShadowMeshes" type="Node3D" parent="."]
+
+[node name="Shadow" type="MeshInstance3D" parent="ShadowMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.25, 0.5)
+mesh = SubResource("BoxMesh_c05vk")
+skeleton = NodePath("../..")
+
+[node name="Shadow4" type="MeshInstance3D" parent="ShadowMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 1.25, 0.5)
+mesh = SubResource("BoxMesh_c05vk")
+skeleton = NodePath("../..")
+
+[node name="Shadow3" type="MeshInstance3D" parent="ShadowMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 1.25, 12.5)
+mesh = SubResource("BoxMesh_c05vk")
+skeleton = NodePath("../..")
+
+[node name="Shadow2" type="MeshInstance3D" parent="ShadowMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.25, 12.5)
+mesh = SubResource("BoxMesh_c05vk")
+skeleton = NodePath("../..")
+
+[node name="Shadow5" type="MeshInstance3D" parent="ShadowMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.50917, 1.25, 8.860642)
+mesh = SubResource("BoxMesh_qbdyw")
+skeleton = NodePath("../..")
+
+[node name="WinCon" type="Node3D" parent="."]
+script = SubResource("GDScript_5nwvk")
+
+[node name="DoorOpenArea" type="Area3D" parent="WinCon"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WinCon/DoorOpenArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.48607, 1.3845918, 2.2171793)
+shape = SubResource("BoxShape3D_kqiko")
+
+[node name="WinOpenArea" type="Area3D" parent="WinCon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.178898, 0, 8.025812)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WinCon/WinOpenArea"]
+shape = SubResource("BoxShape3D_kqiko")

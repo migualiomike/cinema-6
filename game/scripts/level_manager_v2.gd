@@ -12,8 +12,12 @@ var anomaly_chances: Array[float] = []
 var cur_progress := 0:
 	set(value):
 		progress_number.text = str(value)
+		if value > 6: cur_progress = 6
 		cur_progress = value
+		progress_changed.emit()
 var random = RandomNumberGenerator.new()
+
+signal progress_changed()
 
 @onready var player: CharacterBody3D = $"../CharacterBody3D"
 @onready var anomalies: Node = $Anomalies
@@ -33,7 +37,7 @@ func on_loop(is_forward: bool) -> void:
 	on_progress(is_forward)
 	deactivate_current_anomaly()
 
-	if randi() % 100 < (50 + (cur_progress * 2)): # 50% chance and increases with each success
+	if randi() % 100 < (50 + (cur_progress * 2)) and cur_progress != 6: # 50% chance and increases with each success
 		is_anomaly = true
 	else:
 		is_anomaly = false

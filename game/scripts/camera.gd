@@ -1,6 +1,7 @@
 extends Node3D
 @onready var player: CharacterBody3D = $".."
 @onready var camera_3d: Camera3D = $Camera3D
+@onready var ticket_hand: MeshInstance3D = $TicketHand
 
 var mouse_sensitivity := 0.0015
 var bob_dt := 0.0
@@ -20,6 +21,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_headbob_logic(delta)
 	_handle_zoom(delta)
+	_handle_ticket(delta)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
@@ -27,6 +29,8 @@ func _input(event: InputEvent) -> void:
 		rotation.x = clamp(rotation.x, deg_to_rad(-90.0), deg_to_rad(30.0))
 
 		player.rotation.y -= event.relative.x * mouse_sensitivity
+
+
 
 func _headbob_logic(delta: float) -> void:
 	if not head_bobbing_enabled:
@@ -69,6 +73,10 @@ func _check_for_footstep(pos_y: float) -> void:
 func _handle_zoom(delta: float) -> void:
 	var target_fov := 45.0 if Input.is_action_pressed("zoom") else 75.0
 	camera_3d.fov = lerpf(camera_3d.fov, target_fov, delta * 5.0)
+
+func _handle_ticket(delta: float) -> void:
+	var ticket_pos := -0.155 if Input.is_action_pressed("ticket") else -1.0
+	ticket_hand.position.y = lerpf(ticket_hand.position.y, ticket_pos, delta * 9.0)
 
 func _set_is_headbobbing(value: bool) -> void:
 	if value == is_headbobbing:

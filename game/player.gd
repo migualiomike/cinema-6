@@ -1,6 +1,7 @@
 extends CharacterBody3D
 @onready var camera_3d: Camera3D = $Head/Camera3D
 @onready var head: Node3D = $Head
+@onready var fade: ColorRect = $Control/Fade
 
 
 const SPEED = 5.0 #5.0
@@ -28,3 +29,11 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+
+func on_win() -> void:
+	var tween:Tween
+	tween = create_tween().set_ease(tween.EASE_OUT)
+	tween.set_trans(tween.TRANS_LINEAR)
+	tween.tween_property(fade, "modulate:a", 1.0, 0.5)
+	await tween.finished
+	get_tree().change_scene_to_file("uid://chweqygnpbot5")

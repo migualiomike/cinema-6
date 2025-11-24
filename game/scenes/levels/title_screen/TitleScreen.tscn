@@ -672,7 +672,10 @@ func _ready() -> void:
 	button.button_down.connect(on_button_down)
 	button.button_up.connect(on_button_up)
 	button.pivot_offset = button.size * Vector2(0.5, 1.0)
-	
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	tween = create_tween().set_ease(tween.EASE_OUT).set_parallel(true)
+	tween.tween_property(fade_rect, \"modulate:a\", 0.0, 2).set_delay(0.5)
+
 	
 func on_start_pressed() -> void:
 	
@@ -933,7 +936,6 @@ grow_vertical = 0
 text = "Start Game"
 
 [node name="FadeRect" type="ColorRect" parent="MainMenu"]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
