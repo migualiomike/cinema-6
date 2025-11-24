@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		rotation.x -= event.relative.y * mouse_sensitivity
-		rotation.x = clamp(rotation.x, deg_to_rad(-90.0), deg_to_rad(30.0))
+		rotation.x = clamp(rotation.x, deg_to_rad(-90.0), deg_to_rad(50.0))
 
 		player.rotation.y -= event.relative.x * mouse_sensitivity
 

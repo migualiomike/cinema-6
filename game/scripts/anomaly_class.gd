@@ -15,6 +15,8 @@ var is_active := false:
 func on_activate() -> void:
 	pass
 
+func process_anomaly(delta) -> void:
+	pass
 
 func on_deactivate() -> void:
 	pass

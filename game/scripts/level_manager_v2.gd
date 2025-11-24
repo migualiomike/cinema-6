@@ -16,15 +16,20 @@ var cur_progress := 0:
 		cur_progress = value
 		progress_changed.emit()
 var random = RandomNumberGenerator.new()
+var player_in_hall := false
 
 signal progress_changed()
+signal player_hall_changed(is_true:bool)
 
+@onready var hall_detector: Area3D = $HallDetector
 @onready var player: CharacterBody3D = $"../CharacterBody3D"
 @onready var anomalies: Node = $Anomalies
 @onready var progress_number: Label3D = $ProgressNumber
 
 
 func _ready() -> void:
+	hall_detector.body_entered.connect(player_entered_hall)
+	hall_detector.body_exited.connect(player_exited_hall)
 	for child in anomalies.get_children():
 		anomaly_array.append(child)
 		anomaly_chances.append(child.chance)
@@ -32,6 +37,18 @@ func _ready() -> void:
 	for point in tele_points:
 		point.teleport.connect(on_loop)
 
+func _physics_process(delta: float) -> void:
+	if anomaly_active != null: anomaly_active.process_anomaly(delta)
+
+func player_entered_hall(body:Node3D):
+	if body.is_in_group("Player"):
+		player_in_hall = true
+		player_hall_changed.emit(true)
+
+func player_exited_hall(body:Node3D):
+	if body.is_in_group("Player"):
+		player_in_hall = false
+		player_hall_changed.emit(false)
 
 func on_loop(is_forward: bool) -> void:
 	on_progress(is_forward)
@@ -82,6 +99,7 @@ func deactivate_current_anomaly() -> void:
 func is_anomaly_active(value: bool) -> void:
 	if value:
 		anomaly_active = anomaly_array[random.rand_weighted(anomaly_chances)]
+		#anomaly_active = anomaly_array[2]
 		anomaly_active.is_active = true
 
 	is_anomaly = value

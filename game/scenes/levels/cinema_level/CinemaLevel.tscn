@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=4 uid="uid://omurinejaiqf"]
+[gd_scene load_steps=96 format=4 uid="uid://omurinejaiqf"]
 
 [ext_resource type="Script" uid="uid://b048eivsaf14b" path="res://scripts/level_manager_v2.gd" id="1_b5dv5"]
 [ext_resource type="Material" uid="uid://bg34i233ryb7y" path="res://assets/shaders/DarkProtoGrid.tres" id="1_lguoa"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://pgsrp3oe5gw0" path="res://assets/dev_level/posters/get_out_poster.jpg" id="11_tutmf"]
 [ext_resource type="Texture2D" uid="uid://cq3ki06mv0bue" path="res://assets/dev_level/posters/kangaroo_poster.jpg" id="12_jx5ev"]
 [ext_resource type="Texture2D" uid="uid://c8owjjpo2b06j" path="res://assets/dev_level/posters/28_years_later_poster.jpg" id="13_5nwvk"]
+[ext_resource type="AudioStream" uid="uid://cyd84diindv2u" path="res://assets/audio/clown_horn.mp3" id="17_5nwvk"]
 [ext_resource type="Texture2D" uid="uid://wwwco1u7it61" path="res://assets/objects/cutout_clown/cutout_clown_cutout_clown Color.png" id="18_8ju8i"]
 [ext_resource type="Texture2D" uid="uid://bypyftd2m6tef" path="res://assets/objects/cutout_clown/cutout_clown_cutout_clown Roughness.png" id="19_r11fm"]
 [ext_resource type="Texture2D" uid="uid://bb3bl0ibvub0p" path="res://assets/objects/cutout_clown/cutout_clown_cutout_clown Normal.png" id="20_bjhaf"]
@@ -52,8 +53,8 @@ func _ready() -> void:
 			child.screen_exited.connect(on_screen_logic.bind(false))
 
 
-func _physics_process(delta: float) -> void:
-	if is_active and not is_on_screen:
+func process_anomaly(delta) -> void:
+	if is_active and not is_on_screen and level_manager.player_in_hall:
 		var dir = level_manager.player.global_position - cutout_clown.global_position
 		var target_angle_y = atan2(dir.x, dir.z)
 		cutout_clown.rotation.y = target_angle_y
@@ -126,28 +127,66 @@ resource_name = "CutoutClownHide"
 script/source = "extends Anomaly
 
 
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var clown_horn: AudioStreamPlayer3D = $\"../CutoutClown/CutoutClown/ClownHorn\"
+
 @onready var level_manager: LevelManager = $\"../..\"
 @export var cutout_clown: StaticBody3D
+@export var hiding_spots : Array [Marker3D]
 var og_pos: Transform3D
 var is_on_screen := false
+var player_has_entered_room := false
+var has_found_clown := false : 
+	set(value):
+		if value == has_found_clown: return
+		if value == true: player_found_clown()
+		has_found_clown = value
 
 
 func _ready() -> void:
+	level_manager.player_hall_changed.connect(player_enter_room)
 	og_pos = cutout_clown.global_transform
 	for child in cutout_clown.get_children():
 		if child is VisibleOnScreenNotifier3D:
 			child.screen_entered.connect(on_screen_logic.bind(true))
 			child.screen_exited.connect(on_screen_logic.bind(false))
 
+func process_anomaly(delta) -> void:
+	find_clown_logic()
 
+func player_enter_room(has_entered:bool) -> void:
+	if player_has_entered_room == false and is_active: animation_player.play(\"CloseDoors\")
+	player_has_entered_room = true
+
+func player_found_clown() -> void:
+	if is_active: 
+		animation_player.play_backwards(\"CloseDoors\")
+		clown_horn.play()
+
+func find_clown_logic() -> void:
+	#print(level_manager.player.global_position.distance_to(cutout_clown.global_position))
+	var player_forward := -level_manager.player.global_transform.basis.z.normalized()
+	var dir_to_target := (cutout_clown.global_position - level_manager.player.global_position).normalized()
+	var dis_to_target := level_manager.player.global_position.distance_to(cutout_clown.global_position)
+	var view_angle := player_forward.dot(dir_to_target)
+	if level_manager.player_in_hall and view_angle > 0.7 and dis_to_target < 5:
+		has_found_clown = true
 	
+	#print(is_in_view) # > 0.95
+	#print(level_manager.player.global_position.distance_to(cutout_clown.global_position)) # < 5
+	#print(view_angle)
+
 func on_activate() -> void:
-	cutout_clown.global_position = Vector3(26.783, 0.07, 5.463)
-	cutout_clown.global_rotation = Vector3(0.0, deg_to_rad(170.8), 0)
-	
+	cutout_clown.global_transform = hiding_spots.pick_random().global_transform
+	#cutout_clown.global_position = Vector3(26.783, 0.07, 5.463)
+	#cutout_clown.global_rotation = Vector3(0.0, deg_to_rad(170.8), 0)
+	has_found_clown = false
+	player_has_entered_room = false
 
 func on_deactivate() -> void:
 	cutout_clown.global_transform = og_pos
+	player_has_entered_room = false
+	has_found_clown = false
 
 func on_screen_logic(on_screen: bool) -> void:
 	if on_screen:
@@ -155,6 +194,285 @@ func on_screen_logic(on_screen: bool) -> void:
 	elif on_screen == false:
 		is_on_screen = false
 "
+
+[sub_resource type="Animation" id="Animation_jx5ev"]
+resource_name = "CloseDoors"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorLeft:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorLeft:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(-0.17453302, -0.25, 0, 0.25, 0, -1.5707964, -0.16666667, 0.23271057, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorLeft:rotation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorRight:rotation:x")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorRight:rotation:y")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(-2.967059, -0.25, 0, 0.25, 0, -1.5707964, -0.16666667, -0.23271042, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorRight:rotation:z")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorRight:rotation:x")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/7/type = "bezier"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorRight:rotation:y")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0.17453302, -0.25, 0, 0.25, 0, 1.5707964, -0.16666667, -0.23271057, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/8/type = "bezier"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorRight:rotation:z")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/9/type = "bezier"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorLeft:rotation:x")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/10/type = "bezier"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorLeft:rotation:y")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(2.9670596, -0.25, 0, 0.25, 0, 1.5707964, -0.16666667, 0.23271054, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/11/type = "bezier"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorLeft:rotation:z")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"handle_modes": PackedInt32Array(0, 2),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.16666667, 0, 0, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="Animation" id="Animation_5nwvk"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorLeft:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorLeft:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(-0.17453302, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorLeft:rotation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorRight:rotation:x")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorRight:rotation:y")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(-2.967059, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../../CinemaLevel1_Imported/ExitHall/ExitDoorRight:rotation:z")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/6/type = "bezier"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorRight:rotation:x")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/7/type = "bezier"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorRight:rotation:y")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0.17453302, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/8/type = "bezier"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorRight:rotation:z")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/9/type = "bezier"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorLeft:rotation:x")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/10/type = "bezier"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorLeft:rotation:y")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(2.9670596, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/11/type = "bezier"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("../../../CinemaLevel1_Imported/EntranceHall/EntranceDoorLeft:rotation:z")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kqiko"]
+_data = {
+&"CloseDoors": SubResource("Animation_jx5ev"),
+&"RESET": SubResource("Animation_5nwvk")
+}
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jx5ev"]
+size = Vector3(38.69281, 5, 22.607788)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bjhaf"]
 size = Vector3(0.19543457, 2, 10)
@@ -1334,14 +1652,43 @@ aabb = AABB(-0.5953258, -1.4719007, -0.1553831, 1.1906517, 2.9438014, 0.3107662)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="Level Manager/Anomalies/CutoutClown/CutoutClown"]
 
-[node name="CutoutClownHide" type="Node" parent="Level Manager/Anomalies" node_paths=PackedStringArray("cutout_clown")]
+[node name="ClownHorn" type="AudioStreamPlayer3D" parent="Level Manager/Anomalies/CutoutClown/CutoutClown"]
+transform = Transform3D(1.0000001, 0, 2.9802322e-08, 0, 1, 0, -2.9802322e-08, 0, 1.0000001, 0, 0.9470898, 0)
+stream = ExtResource("17_5nwvk")
+volume_db = -20.0
+
+[node name="CutoutClownHide" type="Node" parent="Level Manager/Anomalies" node_paths=PackedStringArray("cutout_clown", "hiding_spots")]
 script = SubResource("GDScript_jx5ev")
 cutout_clown = NodePath("../CutoutClown/CutoutClown")
+hiding_spots = [NodePath("HidingSpots/Marker3D"), NodePath("HidingSpots/Marker3D2"), NodePath("HidingSpots/Marker3D3")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Level Manager/Anomalies/CutoutClownHide"]
+libraries = {
+&"": SubResource("AnimationLibrary_kqiko")
+}
+
+[node name="HidingSpots" type="Node" parent="Level Manager/Anomalies/CutoutClownHide"]
+
+[node name="Marker3D" type="Marker3D" parent="Level Manager/Anomalies/CutoutClownHide/HidingSpots"]
+transform = Transform3D(-0.9184049, 0, 0.3956418, 0, 1, 0, -0.3956418, 0, -0.9184049, 26.718912, 0.18950939, 5.635024)
+
+[node name="Marker3D2" type="Marker3D" parent="Level Manager/Anomalies/CutoutClownHide/HidingSpots"]
+transform = Transform3D(0.99216056, 0, -0.12496964, 0, 1, 0, 0.12496964, 0, 0.99216056, 33.920822, -0.046909332, -5.428888)
+
+[node name="Marker3D3" type="Marker3D" parent="Level Manager/Anomalies/CutoutClownHide/HidingSpots"]
+transform = Transform3D(0.3051501, -0.25420076, 0.9177502, 0.9517548, 0.048675314, -0.30297434, 0.03234453, 0.9659259, 0.25679007, 4.783607, 3.0122414, -1.9771978)
 
 [node name="ProgressNumber" type="Label3D" parent="Level Manager"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.952447, 1.6928802, -2.4869626)
 pixel_size = 0.04
 text = "0"
+
+[node name="HallDetector" type="Area3D" parent="Level Manager"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.463734, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level Manager/HallDetector"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.592926, 0, 0.6300659)
+shape = SubResource("BoxShape3D_jx5ev")
 
 [node name="WorldConfig" type="Node" parent="."]
 
@@ -1607,13 +1954,13 @@ metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders
 [node name="PackedScene_CinemaDoorL_005" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("27_tutmf")]
 transform = Transform3D(0.98480767, 0, 0.17364877, 0, 1, 0, -0.17364877, 0, 0.98480767, 6.7535915, 0.15012491, 5.249746)
 
-[node name="PackedScene_CinemaDoorL_007" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("26_imu3w")]
-transform = Transform3D(-0.98480785, 0, 0.1736483, 0, 1, 0, -0.1736483, 0, -0.98480785, 6.753588, 0.15012491, -5.2497506)
+[node name="EntranceDoorLeft" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("26_imu3w")]
+transform = Transform3D(-0.98480785, 0, 0.17364831, 0, 1, 0, -0.17364831, 0, -0.98480785, 6.753588, 0.15012491, -5.2497506)
 
 [node name="PackedScene_CinemaDoorR_005" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("26_imu3w")]
 transform = Transform3D(-0.98480785, 0, 0.1736483, 0, 1, 0, -0.1736483, 0, -0.98480785, 6.753583, 0.15012491, 7.7500052)
 
-[node name="PackedScene_CinemaDoorR_007" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("27_tutmf")]
+[node name="EntranceDoorRight" parent="CinemaLevel1_Imported/EntranceHall" instance=ExtResource("27_tutmf")]
 transform = Transform3D(0.9848077, 0, 0.17364827, 0, 1, 0, -0.17364827, 0, 0.9848077, 6.7535844, 0.15012491, -7.7500014)
 
 [node name="StaticBody3D_Exit_001" type="StaticBody3D" parent="CinemaLevel1_Imported/EntranceHall"]
@@ -1684,14 +2031,14 @@ metadata/material_1 = "D:/GameDev/1. Godot Projects/cinema-6/game/scenes/levels/
 metadata/material_2 = "D:/GameDev/1. Godot Projects/cinema-6/game/assets/shaders/DarkProtoGrid.tres"
 metadata/collision = "trimesh"
 
-[node name="PackedScene_CinemaDoorL_004" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("27_tutmf")]
-transform = Transform3D(-0.9848076, 0, -0.17364894, 0, 1, 0, 0.17364894, 0, -0.9848076, -6.7535934, 0.15012491, -5.2497435)
+[node name="ExitDoorRight" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("27_tutmf")]
+transform = Transform3D(-0.98480755, 0, -0.17364898, 0, 1, 0, 0.17364898, 0, -0.98480755, -6.7535934, 0.15012491, -5.2497435)
+
+[node name="ExitDoorLeft" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("26_imu3w")]
+transform = Transform3D(0.9848077, 0, -0.17364827, 0, 1, 0, 0.17364827, 0, 0.9848077, -6.753586, 0.15012491, -7.750003)
 
 [node name="PackedScene_CinemaDoorL_006" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("26_imu3w")]
 transform = Transform3D(0.9848078, 0, -0.17364797, 0, 1, 0, 0.17364797, 0, 0.9848078, -6.7535896, 0.15012491, 5.249753)
-
-[node name="PackedScene_CinemaDoorR_004" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("26_imu3w")]
-transform = Transform3D(0.9848077, 0, -0.17364827, 0, 1, 0, 0.17364827, 0, 0.9848077, -6.753586, 0.15012491, -7.750003)
 
 [node name="PackedScene_CinemaDoorR_006" parent="CinemaLevel1_Imported/ExitHall" instance=ExtResource("27_tutmf")]
 transform = Transform3D(-0.9848076, 0, -0.17364909, 0, 1, 0, 0.17364909, 0, -0.9848076, -6.7535896, 0.15012491, 7.750003)
