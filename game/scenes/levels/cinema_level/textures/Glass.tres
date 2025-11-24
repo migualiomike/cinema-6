@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://co427bi06en10"]
+
+[resource]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.37254903, 0.37254903, 0.37254903, 0.11764706)
+metallic_specular = 1.0
+uv1_triplanar = true
